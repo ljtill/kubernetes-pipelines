@@ -23,7 +23,8 @@
 	"extensions": [
 		"ms-dotnettools.csharp",
 		"ms-azuretools.vscode-docker",
-		"ms-azuretools.vscode-azurefunctions"
+		"ms-azuretools.vscode-azurefunctions",
+		"cschleiden.vscode-github-actions"
 	],
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
