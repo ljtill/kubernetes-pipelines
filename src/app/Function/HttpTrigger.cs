@@ -23,9 +23,14 @@ namespace Internal.Function
             string resourceGroupName = SdkContext.RandomResourceName("rg-aci-", 6);
 
             // Context
-            Context.GetContext(log);
+            var azure = Context.GetContext(log);
 
             // Resource Group
+            var resourceGroups = await azure.ResourceGroups.ListAsync();
+            foreach (var group in resourceGroups)
+            {
+                log.LogInformation($"Group: {group.Name}");
+            }
 
             // Container Group
 
