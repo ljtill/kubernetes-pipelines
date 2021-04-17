@@ -4,6 +4,7 @@ using Microsoft.Azure.WebJobs;
 using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Azure.Management.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 
 using Internal.Utils;
@@ -23,19 +24,12 @@ namespace Internal.Function
             string resourceGroupName = SdkContext.RandomResourceName("rg-aci-", 6);
 
             // Context
-            var azure = Context.GetContext(log);
+            IAzure azure = Context.GetContext(log);
 
-            // Resource Group
-            var resourceGroups = await azure.ResourceGroups.ListAsync();
-            foreach (var group in resourceGroups)
-            {
-                log.LogInformation($"Group: {group.Name}");
-            }
-
-            // Container Group
+            // Resource Groups
+            var resourceGroups = await Resources.GetResourceGroups(log, azure);
 
             string responseMessage = "Sample response";
-
             return new OkObjectResult(responseMessage);
         }
     }
