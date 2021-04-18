@@ -1,21 +1,21 @@
 ---
-name: 'Build'
+name: "Build"
 
 on:
   push:
 
 jobs:
   builds:
-    name: 'Build'
+    name: "Build"
     runs-on: ubuntu-20.04
     steps:
-      - name: 'Checkout'
+      - name: "Checkout"
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: 'Install'
+      - name: "Install"
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: '3.1.*'
-      - name: 'Build'
-        run: dotnet build ./src/app
+          dotnet-version: "3.1.*"
+      - name: "Build"
+        run: dotnet build ./src/Agents
