@@ -5,7 +5,7 @@ using Microsoft.Azure.Management.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Core;
 
-namespace Internal.Utils
+namespace Microsoft.Agents.Utils
 {
     public static class Resources
     {

@@ -4,7 +4,7 @@ using Microsoft.Azure.Management.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Authentication;
 
-namespace Internal.Utils
+namespace Microsoft.Agents.Utils
 {
     public static class Context
     {

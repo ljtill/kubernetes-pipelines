@@ -7,9 +7,9 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Azure.Management.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
 
-using Internal.Utils;
+using Microsoft.Agents.Utils;
 
-namespace Internal.Function
+namespace Microsoft.Agents.Functions
 {
     public static class Agents
     {
