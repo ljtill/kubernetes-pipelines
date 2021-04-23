@@ -9,7 +9,7 @@ using Microsoft.Azure.Management.ResourceManager.Fluent;
 
 using Microsoft.Agents.Utils;
 
-namespace Microsoft.Agents.Functions
+namespace Microsoft.Pipelines.Functions
 {
     public static class Agents
     {
