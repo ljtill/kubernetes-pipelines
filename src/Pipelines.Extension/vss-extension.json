@@ -1,0 +1,35 @@
+{
+    "manifestVersion": 1,
+    "id": "agents",
+    "version": "0.1.1",
+    "name": "Managed Agents",
+    "publisher": "lytill",
+    "categories": [
+        "Azure Pipelines"
+    ],
+    "icons": {
+        "default": "images/extension-icon.png"
+    },
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ],
+    "files": [
+        {
+            "path": "agents"
+        }
+    ],
+    "contributions": [
+        {
+            "id": "agents",
+            "type": "ms.vss-distributed-task.task",
+            "targets": [
+                "ms.vss-distributed-task.tasks"
+            ],
+            "properties": {
+                "name": "Agents"
+            }
+        }
+    ]
+}

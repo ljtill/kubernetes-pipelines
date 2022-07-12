@@ -1,0 +1,178 @@
+{
+    "$schema": "https://raw.githubusercontent.com/Microsoft/azure-pipelines-task-lib/master/tasks.schema.json",
+    "id": "76fe450e-0f83-49b8-9531-e2861822899c",
+    "name": "Agents",
+    "friendlyName": "Azure Pipelines Managed Agents",
+    "description": "Deploy managed agents in Azure Kubernetes Service clusters.",
+    "category": "Utility",
+    "author": "Microsoft",
+    "visibility": [
+        "Build",
+        "Release"
+    ],
+    "runsOn": [
+        "Server"
+    ],
+    "version": {
+        "Major": 0,
+        "Minor": 1,
+        "Patch": 1
+    },
+    "groups": [
+        {
+            "name": "general",
+            "displayName": "General",
+            "isExpanded": true
+        },
+        {
+            "name": "agentConfiguration",
+            "displayName": "Agent Configuration",
+            "isExpanded": true,
+            "visibleRule": "operation = create"
+        },
+        {
+            "name": "advanced",
+            "displayName": "Advanced",
+            "isExpanded": false
+        }
+    ],
+    "inputs": [
+        {
+            "name": "azureServiceBus",
+            "type": "connectedService:AzureServiceBus",
+            "label": "Deployment Continent",
+            "defaultValue": "",
+            "required": true,
+            "helpMarkDown": "Select the deployment continent.",
+            "groupName": "general",
+            "aliases": [
+                "continent"
+            ]
+        },
+        {
+            "name": "operation",
+            "type": "radio",
+            "label": "Operation",
+            "required": true,
+            "defaultValue": "create",
+            "options": {
+                "create": "Create",
+                "delete": "Delete"
+            },
+            "helpMarkDown": "Select the operation to perform.",
+            "groupName": "general"
+        },
+        {
+            "name": "poolName",
+            "type": "string",
+            "label": "Pool Name",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Provide the pool name to configure the agent.",
+            "groupName": "general",
+            "visibleRule": "operation = create"
+        },
+        {
+            "name": "operatingSystem",
+            "type": "pickList",
+            "label": "Operating System",
+            "defaultValue": "linux",
+            "required": false,
+            "options": {
+                "linux": "Linux",
+                "windows": "Windows"
+            },
+            "helpMarkDown": "Select an operating system to configure the container.",
+            "groupName": "agentConfiguration",
+            "visibleRule": "operation = create"
+        },
+        {
+            "name": "imageName",
+            "type": "string",
+            "label": "Image Name",
+            "required": false,
+            "defaultValue": "",
+            "helpMarkDown": "Select an image to provision the container.",
+            "groupName": "agentConfiguration",
+            "visibleRule": "operation = create"
+        },
+        {
+            "name": "imageTag",
+            "type": "string",
+            "label": "Image Tag",
+            "required": false,
+            "defaultValue": "latest",
+            "helpMarkDown": "Provide the image tag to provision the container.",
+            "groupName": "agentConfiguration",
+            "visibleRule": "operation = create"
+        },
+        {
+            "name": "agentCount",
+            "type": "int",
+            "label": "Agent Count",
+            "required": true,
+            "defaultValue": "1",
+            "helpMarkDown": "Provide the required quantity of container agents.",
+            "groupName": "agentConfiguration",
+            "visibleRule": "operation = create"
+        },
+        {
+            "name": "clusterNamespace",
+            "type": "string",
+            "label": "Cluster Namespace",
+            "required": false,
+            "defaultValue": "default",
+            "helpMarkDown": "Provide the Kubernetes namespace to provision the containers.",
+            "groupName": "agentConfiguration",
+            "visibleRule": "operation = create"
+        },
+        {
+            "name": "waitForCompletion",
+            "type": "boolean",
+            "label": "Wait for task completion",
+            "defaultValue": "true",
+            "required": true,
+            "helpMarkDown": "If this is true, this task will wait for TaskCompleted event for the specified task timeout.",
+            "groupName": "advanced"
+        }
+    ],
+    "execution": {
+        "ServiceBus": {
+            "events": {
+                "taskCompleted": {
+                    "enabled": "$(waitForCompletion)"
+                }
+            },
+            "execute": {
+                "endpointId": "$(azureServiceBus)",
+                "connectionString": "$(endpoint.serviceBusConnectionString)",
+                "serviceBusQueueName": "$(endpoint.serviceBusQueueName)",
+                "messageBody": {
+                    "poolName": "$(poolName)",
+                    "operatingSystem": "$(operatingSystem)",
+                    "imageName": "$(imageName)",
+                    "imageTag": "$(imageTag)",
+                    "agentCount": "$(agentCount)",
+                    "clusterNamespace": "$(clusterNamespace)"
+                },
+                "sessionId": "",
+                "certificateString": "",
+                "signaturePropertyKey": "",
+                "messageProperties": {
+                    "PlanUrl": "$(system.CollectionUri)",
+                    "ProjectId": "$(system.TeamProjectId)",
+                    "HubName": "$(system.HostType)",
+                    "PlanId": "$(system.PlanId)",
+                    "JobId": "$(system.JobId)",
+                    "TimelineId": "$(system.TimelineId)",
+                    "TaskInstanceName": "$(system.TaskInstanceName)",
+                    "TaskInstanceId": "$(system.TaskInstanceId)",
+                    "AuthToken": "$(system.AccessToken)",
+                    "DefinitionId": "$(system.DefinitionId)",
+                    "Operation": "$(operation)"
+                }
+            },
+            "cancel": {}
+        }
+    }
+}
