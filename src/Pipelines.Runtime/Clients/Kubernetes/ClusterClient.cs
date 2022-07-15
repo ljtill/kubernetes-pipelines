@@ -9,7 +9,7 @@ public class ClusterClient
 {
     private readonly ApplicationProperties _appProperties;
     private readonly UserConfigOptions _userConfigOptions;
-    private readonly KubernetesClient _kubernetesClient;
+    private readonly Kubernetes _kubernetes;
     private readonly ClusterService _clusterService;
     private readonly TaskLogger _taskLogger;
 
@@ -19,9 +19,9 @@ public class ClusterClient
         _userConfigOptions = MessageHelper.ParseConfigurationOptions(configData);
 
         var config = KubernetesHelper.GetClientConfig();
-        _kubernetesClient = new KubernetesClient(config);
+        _kubernetes = new Kubernetes(config);
 
-        _clusterService = new ClusterService(_kubernetesClient, _taskLogger);
+        _clusterService = new ClusterService(_kubernetes, _taskLogger);
 
         _taskLogger = taskLogger;
     }
@@ -39,7 +39,7 @@ public class ClusterClient
         {
             // Create namespace
             var @namespace = _clusterService.NewNamespace(_userConfigOptions.ClusterNamespace);
-            await _kubernetesClient.CreateNamespaceAsync(@namespace);
+            await _kubernetes.CreateNamespaceAsync(@namespace);
         }
         catch (HttpOperationException hx)
         {
@@ -68,7 +68,7 @@ public class ClusterClient
         {
             // Create deployment
             var deployment = _clusterService.NewDeployment(labels, _userConfigOptions.AgentCount, _userConfigOptions.ImageName, _userConfigOptions.ImageTag, _userConfigOptions.PoolName);
-            await _kubernetesClient.CreateNamespacedDeploymentAsync(deployment, _userConfigOptions.ClusterNamespace);
+            await _kubernetes.CreateNamespacedDeploymentAsync(deployment, _userConfigOptions.ClusterNamespace);
 
             // Poller
             // TODO(ljtill): Implement container poller
@@ -133,7 +133,7 @@ public class ClusterClient
         try
         {
             // Delete deployment
-            await _kubernetesClient.DeleteNamespacedDeploymentAsync(deployment.Name(), deployment.Namespace());
+            await _kubernetes.DeleteNamespacedDeploymentAsync(deployment.Name(), deployment.Namespace());
         }
         catch
         {

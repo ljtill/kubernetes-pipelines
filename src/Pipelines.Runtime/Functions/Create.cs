@@ -16,7 +16,6 @@ public class Create
             var clusterClient = new ClusterClient(receivedMessage.ApplicationProperties, receivedMessage.Body, taskLogger);
 
             await clusterClient.CreateNamespaceIfNotExistsAsync();
-
             await clusterClient.CreateDeploymentIfNotExistsAsync();
         }
         catch (Exception ex)
