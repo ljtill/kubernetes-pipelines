@@ -4,11 +4,11 @@ using Pipelines.Runtime.Loggers;
 
 namespace Pipelines.Runtime.Functions;
 
-public class Request
+public class Process
 {
-    [FunctionName("Request")]
+    [FunctionName("Process")]
     public async Task Run(
-        [ServiceBusTrigger("request", Connection = "ServiceBusConnection")] ServiceBusReceivedMessage receivedMessage,
+        [ServiceBusTrigger("process", Connection = "ServiceBusConnection")] ServiceBusReceivedMessage receivedMessage,
         [ServiceBus("create", Connection = "ServiceBusConnection")] IAsyncCollector<ServiceBusMessage> sendCreateMessage,
         [ServiceBus("delete", Connection = "ServiceBusConnection")] IAsyncCollector<ServiceBusMessage> sendDeleteMessage)
     {
