@@ -5,12 +5,12 @@ namespace Pipelines.Runtime.Services;
 
 public class ClusterService
 {
-    private readonly KubernetesClient _kubernetesClient;
+    private readonly Kubernetes _kubernetes;
     private readonly TaskLogger _taskLogger;
 
-    public ClusterService(KubernetesClient kubernetesClient, TaskLogger taskLogger)
+    public ClusterService(Kubernetes kubernetesClient, TaskLogger taskLogger)
     {
-        _kubernetesClient = kubernetesClient;
+        _kubernetes = kubernetesClient;
         _taskLogger = taskLogger;
     }
 
@@ -56,7 +56,7 @@ public class ClusterService
         try
         {
             // Retrieve all deployments from the Kubernetes API
-            deploymentList = await _kubernetesClient.ListDeploymentForAllNamespacesAsync();
+            deploymentList = await _kubernetes.ListDeploymentForAllNamespacesAsync();
         }
         catch (HttpRequestException hx)
         {
@@ -80,7 +80,7 @@ public class ClusterService
         try
         {
             // Retrieve all deployments from the Kubernetes API
-            deploymentList = await _kubernetesClient.ListDeploymentForAllNamespacesAsync();
+            deploymentList = await _kubernetes.ListDeploymentForAllNamespacesAsync();
         }
         catch (HttpRequestException hx)
         {
@@ -114,7 +114,7 @@ public class ClusterService
         try
         {
             // Retrieve all namespaces from the Kubernetes API
-            namespaceList = await _kubernetesClient.ListNamespaceAsync();
+            namespaceList = await _kubernetes.ListNamespaceAsync();
         }
         catch (HttpRequestException hx)
         {
