@@ -1,5 +1,8 @@
-# macOS System files
+# macOS
 .DS_Store
+
+# Visual Studio
+.vs/
 
 # Visual Studio Code
 .vscode/
