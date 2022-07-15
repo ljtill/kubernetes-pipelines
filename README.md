@@ -24,11 +24,11 @@ _Please note this repository is under development and subject to change._
 | ----------------------- | -------------------------------- |
 | eng/                    | Project Support Artifacts        |
 | eng/config/             | Configuration Files              |
-| eng/images/             | Pipeline Container Images        |
 | eng/infra/              | Infra-as-Code (Bicep) Components |
 | eng/tools/              | Project Tools                    |
 | src/                    | Runtime Source Code              |
 | src/Pipelines.Client    | Message Queue Tooling            |
 | src/Pipelines.Extension | Azure DevOps Extension Files     |
+| src/Pipelines.Images/   | Pipeline Container Images        |
 | src/Pipelines.Runtime   | Azure Functions Source           |
 | src/Pipelines.Tests     | Project Test Files               |
