@@ -9,6 +9,7 @@
         }
     },
     "functions": [
-        "Request"
+        "Process",
+        "Maintain"
     ]
 }
