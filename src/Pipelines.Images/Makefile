@@ -1,17 +1,17 @@
 ifndef RESOURCE_GROUP
-  $(error "RESOURCE_GROUP is not set")
+	$(error "RESOURCE_GROUP is not set")
 endif
 
 ifndef CLUSTER_NAME
-  $(error "CLUSTER_NAME is not set")
+	$(error "CLUSTER_NAME is not set")
 endif
 
 ifndef REGISTRY_NAME
-  $(error "REGISTRY_NAME is not set")
+	$(error "REGISTRY_NAME is not set")
 endif
 
 ifndef IMAGE_NAME
-  $(error "IMAGE_NAME is not set")
+	$(error "IMAGE_NAME is not set")
 endif
 
 build:
