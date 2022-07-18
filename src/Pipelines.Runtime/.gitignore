@@ -4,6 +4,9 @@
 # Azure Functions localsettings file
 local.settings.json
 
+# Kubernetes file
+functions.yaml
+
 # User-specific files
 *.suo
 *.user
