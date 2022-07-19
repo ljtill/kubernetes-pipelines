@@ -13,7 +13,7 @@ _Please note this repository is under development and subject to change._
 ### Documentation
 
 - Getting Started: [Link](https://github.com/ljtill/pipelines/wiki/getting-started)
-- System Architecture: [Link](https://github.com/ljtill/pipelines/wiki/system-architecture)
+- System Design: [Link](https://github.com/ljtill/pipelines/wiki/system-design)
 - In-flight Tasks: [Link](https://github.com/ljtill/pipelines/wiki/tasks)
 
 ---
