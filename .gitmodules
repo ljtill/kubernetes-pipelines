@@ -1,8 +1,0 @@
-[submodule "config"]
-	path = eng/config
-	url = git@github.com:ljtill/pipelines-config.git
-	branch = main
-[submodule "tools"]
-	path = eng/tools
-	url = git@github.com:ljtill/pipelines-tools.git
-	branch = main
