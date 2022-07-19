@@ -1,0 +1,37 @@
+{
+    "$schema": "http://github.com/ljtill/pipelines/blob/main/eng/config/platform.schema.json",
+    "services": {
+        "subscription": "",
+        "resourceGroup": "",
+        "name": "",
+        "description": "",
+        "location": "",
+        "properties": {
+            "clientAddress": ""
+        }
+    },
+    "zones": {
+        "subscription": "",
+        "resourceGroup": "",
+        "location": "",
+        "properties": {}
+    },
+    "endpoints": {
+        "subscription": "",
+        "resourceGroup": "",
+        "location": "",
+        "properties": {}
+    },
+    "clusters": [
+        {
+            "subscription": "",
+            "resourceGroup": "",
+            "name": "",
+            "description": "",
+            "location": "",
+            "properties": {
+                "country": ""
+            }
+        }
+    ]
+}
