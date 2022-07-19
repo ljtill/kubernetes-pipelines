@@ -1,5 +1,5 @@
 {
-    "$schema": "http://github.com/ljtill/pipelines/blob/main/eng/config/platform.schema.json",
+    "$schema": "https://raw.githubusercontent.com/ljtill/pipelines/main/eng/config/platform.schema.json",
     "services": {
         "subscription": "",
         "resourceGroup": "",
