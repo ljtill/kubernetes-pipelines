@@ -1,0 +1,15 @@
+{
+    "analyzers": {
+        "core": {
+            "rules": {
+                "no-hardcoded-env-urls": {
+                    "level": "warning",
+                    "excludedhosts": [
+                        "core.windows.net",
+                        "management.azure.com"
+                    ]
+                }
+            }
+        }
+    }
+}
