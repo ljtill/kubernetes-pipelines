@@ -1,0 +1,172 @@
+{
+    "$schema": "https://json-schema.org/draft-07/schema",
+    "$id": "http://github.com/ljtill/pipelines/blob/main/eng/config/platform.schema.json",
+    "title": "Root Schema",
+    "type": "object",
+    "required": [
+        "services",
+        "zones",
+        "endpoints",
+        "clusters"
+    ],
+    "properties": {
+        "services": {
+            "title": "The services Schema",
+            "type": "object",
+            "required": [
+                "subscription",
+                "resourceGroup",
+                "name",
+                "description",
+                "location",
+                "properties"
+            ],
+            "properties": {
+                "subscription": {
+                    "title": "The subscription Schema",
+                    "type": "string"
+                },
+                "resourceGroup": {
+                    "title": "The resourceGroup Schema",
+                    "type": "string"
+                },
+                "name": {
+                    "title": "The name Schema",
+                    "type": "string"
+                },
+                "description": {
+                    "title": "The description Schema",
+                    "type": "string"
+                },
+                "location": {
+                    "title": "The location Schema",
+                    "type": "string"
+                },
+                "properties": {
+                    "title": "The properties Schema",
+                    "type": "object",
+                    "required": [
+                        "clientAddress"
+                    ],
+                    "properties": {
+                        "clientAddress": {
+                            "title": "The clientAddress Schema",
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "zones": {
+            "title": "The zones Schema",
+            "type": "object",
+            "required": [
+                "subscription",
+                "resourceGroup",
+                "location",
+                "properties"
+            ],
+            "properties": {
+                "subscription": {
+                    "title": "The subscription Schema",
+                    "type": "string"
+                },
+                "resourceGroup": {
+                    "title": "The resourceGroup Schema",
+                    "type": "string"
+                },
+                "location": {
+                    "title": "The location Schema",
+                    "type": "string"
+                },
+                "properties": {
+                    "title": "The properties Schema",
+                    "type": "object",
+                    "required": [],
+                    "properties": {}
+                }
+            }
+        },
+        "endpoints": {
+            "title": "The endpoints Schema",
+            "type": "object",
+            "required": [
+                "subscription",
+                "resourceGroup",
+                "location",
+                "properties"
+            ],
+            "properties": {
+                "subscription": {
+                    "title": "The subscription Schema",
+                    "type": "string"
+                },
+                "resourceGroup": {
+                    "title": "The resourceGroup Schema",
+                    "type": "string"
+                },
+                "location": {
+                    "title": "The location Schema",
+                    "type": "string"
+                },
+                "properties": {
+                    "title": "The properties Schema",
+                    "type": "object",
+                    "required": [],
+                    "properties": {}
+                }
+            }
+        },
+        "clusters": {
+            "title": "The clusters Schema",
+            "type": "array",
+            "items": {
+                "title": "A Schema",
+                "type": "object",
+                "required": [
+                    "subscription",
+                    "resourceGroup",
+                    "name",
+                    "description",
+                    "location",
+                    "properties"
+                ],
+                "properties": {
+                    "subscription": {
+                        "title": "The subscription Schema",
+                        "type": "string"
+                    },
+                    "resourceGroup": {
+                        "title": "The resourceGroup Schema",
+                        "type": "string"
+                    },
+                    "name": {
+                        "title": "The name Schema",
+                        "type": "string"
+                    },
+                    "description": {
+                        "title": "The description Schema",
+                        "type": "string"
+                    },
+                    "location": {
+                        "title": "The location Schema",
+                        "type": "string"
+                    },
+                    "properties": {
+                        "title": "The properties Schema",
+                        "type": "object",
+                        "required": [
+                            "country"
+                        ],
+                        "properties": {
+                            "country": {
+                                "title": "The country Schema",
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
