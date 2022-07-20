@@ -94,4 +94,4 @@ module endpoints 'modules/endpoints/resources.bicep' = {
 // Variables
 // ---------
 
-var config = json(loadTextContent('../../config/src/platform.json'))
+var config = json(loadTextContent('../config/platform.local.json'))
