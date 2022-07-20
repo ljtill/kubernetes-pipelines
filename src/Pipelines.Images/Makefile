@@ -1,18 +1,19 @@
-ifndef RESOURCE_GROUP
-  $(error "RESOURCE_GROUP is not set")
-endif
+variables:
+	ifndef RESOURCE_GROUP
+	  $(error "Environment variable RESOURCE_GROUP is not set")
+	endif
 
-ifndef CLUSTER_NAME
-  $(error "CLUSTER_NAME is not set")
-endif
+	ifndef CLUSTER_NAME
+	  $(error "Environment variable CLUSTER_NAME is not set")
+	endif
 
-ifndef REGISTRY_NAME
-  $(error "REGISTRY_NAME is not set")
-endif
+	ifndef REGISTRY_NAME
+	  $(error "Environment variable REGISTRY_NAME is not set")
+	endif
 
-ifndef IMAGE_NAME
-  $(error "IMAGE_NAME is not set")
-endif
+	ifndef IMAGE_NAME
+	  $(error "Environment variable IMAGE_NAME is not set")
+	endif
 
 build:
 	@echo "Building platform images..."
