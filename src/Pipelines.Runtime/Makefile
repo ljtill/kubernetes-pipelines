@@ -1,15 +1,8 @@
 variables:
-	ifndef NAMESPACE
-	  $(error "Environment variable NAMESPACE is not set")
-	endif
-
-	ifndef RUNTIME_NAME
-	  $(error "Environment variable RUNTIME_NAME is not set")
-	endif
-
-	ifndef REGISTRY_NAME
-	  $(error "Environment variable REGISTRY_NAME is not set")
-	endif
+	@echo "=> Checking environment variables..."
+	@if [[ -z "$(NAMESPACE)" || -z "$(RUNTIME_NAME)" || -z "$(REGISTRY_NAME)" ]]; then \
+		echo "Missing required environment variables"; \
+	fi
 
 login: variables
 	@echo '=> Authenticating session...'
