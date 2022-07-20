@@ -1,7 +1,8 @@
 variables:
 	@echo "=> Checking environment variables..."
 	@if [[ -z "$(RESOURCE_GROUP)" || -z "$(CLUSTER_NAME)" || -z "$(REGISTRY_NAME)" || -z "$(IMAGE_NAME)" ]]; then \
-		$(error "Missing required environment variables"); \
+		echo "Missing required environment variables"; \
+		exit 1; \
 	fi
 
 build:

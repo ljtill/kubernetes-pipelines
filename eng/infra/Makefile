@@ -1,7 +1,8 @@
 variables:
 	@echo "=> Checking environment variables..."
 	@if [[ -z "$(RESOURCE_GROUP)" || -z "$(CLUSTER_NAME)" || -z "$(TENANT_ID)" ]]; then \
-		$(error "Missing required environment variables"); \
+		echo "Missing required environment variables"; \
+		exit 1; \
 	fi
 
 deploy:
