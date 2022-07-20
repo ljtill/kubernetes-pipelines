@@ -1,15 +1,8 @@
 variables:
-	ifndef RESOURCE_GROUP
-	  $(error "Environment variable RESOURCE_GROUP is not set")
-	endif
-
-	ifndef CLUSTER_NAME
-	  $(error "Environment variable CLUSTER_NAME is not set")
-	endif
-
-	ifndef TENANT_ID
-	  $(error "Environment variable TENANT_ID is not set")
-	endif
+	@echo "=> Checking environment variables..."
+	@if [[ -z "$(RESOURCE_GROUP)" || -z "$(CLUSTER_NAME)" || -z "$(TENANT_ID)" ]]; then \
+		echo "Missing required environment variables"; \
+	fi
 
 deploy:
 	@echo '=> Deploying platform...'
@@ -25,10 +18,10 @@ bootstrap: variables
 
 destroy:
 	@echo '=> Destroying platform...'
-	@cat ../config/platform.json | jq -r '.endpoints.resourceGroup' | xargs -rtL1 az group delete --yes --name
-	@cat ../config/platform.json | jq -r '.clusters[].resourceGroup' | xargs -rtL1 az group delete --yes --name
-	@cat ../config/platform.json | jq -r '.services.resourceGroup' | xargs -rtL1 az group delete --yes --name
-	@cat ../config/platform.json | jq -r '.zones.resourceGroup' | xargs -rtL1 az group delete --yes --name
+	@cat ../config/platform.local.json | jq -r '.endpoints.resourceGroup' | xargs -rtL1 az group delete --yes --name
+	@cat ../config/platform.local.json | jq -r '.clusters[].resourceGroup' | xargs -rtL1 az group delete --yes --name
+	@cat ../config/platform.local.json | jq -r '.services.resourceGroup' | xargs -rtL1 az group delete --yes --name
+	@cat ../config/platform.local.json | jq -r '.zones.resourceGroup' | xargs -rtL1 az group delete --yes --name
 	@-make purge
 
 purge:
