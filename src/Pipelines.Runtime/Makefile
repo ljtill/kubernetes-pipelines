@@ -1,7 +1,7 @@
 variables:
 	@echo "=> Checking environment variables..."
 	@if [[ -z "$(NAMESPACE)" || -z "$(RUNTIME_NAME)" || -z "$(REGISTRY_NAME)" ]]; then \
-		echo "Missing required environment variables"; \
+		$(error "Missing required environment variables"); \
 	fi
 
 login: variables
