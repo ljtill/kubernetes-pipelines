@@ -3,6 +3,13 @@
 set -e
 
 #
+# Variables
+#
+
+location="Norway East"
+config_path="../config/platform.local.json"
+
+#
 # Environment
 #
 
@@ -24,7 +31,7 @@ deploy()
     echo '=> Deploying platform...'
     az deployment sub create \
         --name 'Microsoft.Bicep.Resources' \
-        --location 'Norway East' \
+        --location $location \
         --template-file './region.bicep'
 }
 
@@ -34,25 +41,25 @@ deploy()
 
 delete()
 {
-    echo '=> Destroying platform...'
+    echo '=> Deleting platform...'
 
-    echo '==> Destroying endpoints...'
-    cat ../config/platform.local.json \
+    echo '==> Removing endpoint resources...'
+    cat $config_path \
         | jq -r '.endpoints.resourceGroup' \
         | xargs -rtL1 az group delete --yes --name
 
-    echo '==> Destroying clusters...'
-    cat ../config/platform.local.json \
+    echo '==> Removing cluster resources...'
+    cat $config_path \
         | jq -r '.clusters[].resourceGroup' \
         | xargs -rtL1 az group delete --yes --name
 
-    echo '==> Destroying services...'
-    cat ../config/platform.local.json \
+    echo '==> Removing service resources...'
+    cat $config_path \
         | jq -r '.services.resourceGroup' \
         | xargs -rtL1 az group delete --yes --name
 
-    echo '==> Destroying zones...'
-    cat ../config/platform.local.json \
+    echo '==> Removing zone resources...'
+    cat $config_path \
         | jq -r '.zones.resourceGroup' \
         | xargs -rtL1 az group delete --yes --name
 }
@@ -64,7 +71,8 @@ delete()
 purge()
 {
     echo '=> Purging vaults...'
-    az keyvault list-deleted --query '[].name' -o tsv | xargs -rtL1 az keyvault purge --name
+    az keyvault list-deleted --query '[].name' -o tsv \
+        | xargs -rtL1 az keyvault purge --name
 }
 
 #
@@ -74,7 +82,10 @@ purge()
 validate()
 {
     echo '=> Validating platform...'
-    az deployment sub what-if --name 'Microsoft.Bicep.Resources' --location 'Norway East' --template-file './region.bicep'
+    az deployment sub what-if \
+        --name 'Microsoft.Bicep.Resources' \
+        --location $location \
+        --template-file './region.bicep'
 }
 
 #
@@ -83,9 +94,14 @@ validate()
 
 bootstrap()
 {
-
-    deploy_kubernetes_autoscaler()
+    bootstrap_autoscaler()
     {
+        echo '=> Bootstrapping Kubernetes Event Driven Autoscaler...'
+        if helm status keda --namespace keda &>/dev/null; then
+            echo -e "==> Skipping installation..."
+            return
+        fi
+
         echo -e '==> Adding Helm Repo...'
         helm repo add kedacore https://kedacore.github.io/charts
 
@@ -99,17 +115,14 @@ bootstrap()
         helm install keda kedacore/keda --namespace keda
     }
 
-    delete_kubernetes_autoscaler()
+    bootstrap_identity()
     {
-        echo '==> Uninstalling helm chart....'
-        helm uninstall keda --namespace keda
+        echo '=> Bootstrapping Azure Workload Identity...'
+        if helm status workload-identity-webhook --namespace azure-workload-identity-system &>/dev/null; then
+            echo -e "==> Skipping installation..."
+            return
+        else
 
-        echo '==> Deleting namespace...'
-        kubectl delete namespace keda
-    }
-
-    deploy_workload_identity()
-    {
         echo '==> Adding helm repo...'
         helm repo add azure-workload-identity https://azure.github.io/azure-workload-identity/charts
 
@@ -145,33 +158,28 @@ bootstrap()
         az rest --method POST --uri "https://graph.microsoft.com/beta/applications/$(OBJECT_ID)/federatedIdentityCredentials" --body $BODY --output none
     }
 
-    delete_workload_identity()
-    {
-        echo '==> Uninstall helm chart...'
-        helm uninstall workload-identity-webhook --namespace azure-workload-identity-system
+    #
+    # Invocation
+    #
 
-        echo '==> Deleting service account...'
-        kubectl delete serviceaccount workload-identity-sa -n functions
-    }
+    command=$(echo $1 | tr '[:upper:]' '[:lower:]')
 
-    bootstrap_cluster()
-    {
-        echo -e '\n=> Bootstrapping Kubernetes Event Driven Autoscaler...'
-        if helm status keda --namespace keda &>/dev/null; then
-            echo -e "==> Skipping installation..."
-            return
-        else
-            deploy_kubernetes_autoscaler()
-        fi
+    case $command in
+        "autoscaler")
+            bootstrap_autoscaler
+            ;;
+        "identity")
+            bootstrap_identity
+            ;;
+        "all")
+            bootstrap_autoscaler
+            bootstrap_identity
+            ;;
+        *)
+            echo "Missing argument"
+            ;;
+    esac
 
-        echo -e '\n=> Bootstrapping Azure Workload Identity...'
-        if helm status workload-identity-webhook --namespace azure-workload-identity-system &>/dev/null; then
-            echo -e "==> Skipping installation..."
-            return
-        else
-            deploy_workload_identity()
-        fi
-    }
 }
 
 #
@@ -191,7 +199,7 @@ case $command in
         ;;
     "bootstrap")
         environment
-        bootstrap
+        bootstrap $2
         ;;
     "delete")
         environment
