@@ -13,9 +13,26 @@ validate:
 	@echo '=> Validating platform...'
 	@az deployment sub what-if --name 'Microsoft.Bicep.Resources' --location 'Norway East' --template-file './region.bicep'
 
-bootstrap: variables
+connection:
+	@echo '=> Checking coonection...'
+
+deploy-autoscaler:
+	@helm repo add kedacore https://kedacore.github.io/charts
+	@helm repo update
+	@kubectl create namespace keda
+	@helm install keda kedacore/keda --namespace keda
+
+destroy-identity:
+
+
+
+destroy-autoscaler:
+
+
+
+bootstrap:
 	@echo '=> Bootstrapping platform...'
-	@az aks command invoke --name $(CLUSTER_NAME) --resource-group $(RESOURCE_GROUP) --command './bootstrap.sh $(TENANT_ID)' --file ./scripts/bootstrap.sh
+	@shell ./scripts/bootstrap.sh
 
 destroy:
 	@echo '=> Destroying platform...'
