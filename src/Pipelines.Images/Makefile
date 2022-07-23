@@ -1,28 +1,19 @@
-variables:
-	@echo "=> Checking environment variables..."
-	@if [[ -z "$(RESOURCE_GROUP)" || -z "$(CLUSTER_NAME)" || -z "$(REGISTRY_NAME)" || -z "$(IMAGE_NAME)" ]]; then \
-		echo "Missing required environment variables"; \
-		exit 1; \
-	fi
+EXEC_PATH = "../scripts/images.sh"
 
 build:
-	@echo "=> Building platform images..."
-	@-make build-linux
-	@-make build-windows
+	$(EXEC_PATH) build all
 
 build-linux:
-	@echo "==> Building linux image..."
+	$(EXEC_PATH) build linux
 
 build-windows:
-	@echo "==> Building windows image..."
+	$(EXEC_PATH) build windows
 
 push:
-	@echo "=> Pushing platform images..."
-	@-make push-linux
-	@-make push-windows
+	$(EXEC_PATH) push all
 
 push-linux:
-	@echo "==> Pushing linux image..."
+	$(EXEC_PATH) push linux
 
 push-windows:
-	@echo "==> Pushing windows image..."
+	$(EXEC_PATH) push windows
