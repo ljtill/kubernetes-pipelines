@@ -156,7 +156,28 @@ bootstrap()
 
         echo '==> Creating federated credentials...'
         az rest --method POST --uri "https://graph.microsoft.com/beta/applications/$(OBJECT_ID)/federatedIdentityCredentials" --body $BODY --output none
+
     }
+
+    # TODO: Implement component removal
+    # delete_autoscaler()
+    # {
+    #     echo '==> Uninstalling helm chart....'
+    #     helm uninstall keda --namespace keda
+
+    #     echo '==> Deleting namespace...'
+    #     kubectl delete namespace keda
+    # }
+
+    # TODO: Implement component removal
+    # delete_identity()
+    # {
+    #     echo '==> Uninstall helm chart...'
+    #     helm uninstall workload-identity-webhook --namespace azure-workload-identity-system
+
+    #     echo '==> Deleting service account...'
+    #     kubectl delete serviceaccount workload-identity-sa -n functions
+    # }
 
     #
     # Invocation
