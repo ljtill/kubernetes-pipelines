@@ -201,7 +201,7 @@ resource links 'Microsoft.Resources/deployments@2021-04-01' = {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      'contentVersion': '1.0.0.0'
+      contentVersion: '1.0.0.0'
       resources: [
         {
           type: 'Microsoft.Network/privateDnsZones/virtualNetworkLinks'
@@ -289,7 +289,7 @@ resource authorization 'Microsoft.Resources/deployments@2021-04-01' = {
     mode: 'Incremental'
     template: {
       '$schema': 'https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#'
-      'contentVersion': '1.0.0.0'
+      contentVersion: '1.0.0.0'
       resources: [
         {
           type: 'Microsoft.Authorization/roleAssignments'
