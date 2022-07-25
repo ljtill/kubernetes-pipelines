@@ -3,16 +3,41 @@
 set -e
 
 #
+# Variables
+#
+
+#
 # Environment
 #
 
 environment()
 {
-    echo "=> Environment..."
-	if [[ -z "$(RESOURCE_GROUP)" || -z "$(CLUSTER_NAME)" || -z "$(REGISTRY_NAME)" || -z "$(IMAGE_NAME)" ]]; then \
-		echo "Missing required environment variables"; \
-		exit 1; \
-	fi
+    echo "=> Checking environment variables..."
+
+    if [[ -z "$RESOURCE_GROUP" ]]; then
+        echo "Missing required environment variable (RESOURCE_GROUP)"
+        exit 1
+    fi
+    echo "==> Reading  variable - RESOURCE_GROUP :: $RESOURCE_GROUP"
+
+    if [[ -z "$CLUSTER_NAME" ]]; then
+        echo "Missing required environment variable (CLUSTER_NAME)"
+        exit 1
+    fi
+    echo "==> Reading variable - CLUSTER_NAME :: $CLUSTER_NAME"
+
+    if [[ -z "$REGISTRY_NAME" ]]; then
+        echo "Missing required environment variable (REGISTRY_NAME)"
+        exit 1
+    fi
+    echo "==> Reading variable - CLUSTER_NAME :: $REGISTRY_NAME"
+
+
+    if [[ -z "$IMAGE_NAME" ]]; then
+        echo "Missing required environment variable (CLUSTER_NAME)"
+        exit 1
+    fi
+    echo "==> Reading variable - CLUSTER_NAME :: $IMAGE_NAME"
 }
 
 #
@@ -45,7 +70,7 @@ build()
     # Invocation
     #
 
-    command=$(echo $1 | tr '[:upper:]' '[:lower:]')
+    command=$(echo "$1" | tr "[:upper:]" "[:lower:]")
 
     case $command in
         "linux")
@@ -57,6 +82,7 @@ build()
         "all")
             build-linux
             build-windows
+            ;;
         *)
             echo "Missing sub argument"
             ;;
@@ -81,7 +107,11 @@ push()
         echo "==> Pushing windows image..."
     }
 
-    command=$(echo $1 | tr '[:upper:]' '[:lower:]')
+    #
+    # Invocation
+    #
+
+    command=$(echo "$1" | tr "[:upper:]" "[:lower:]")
 
     case $command in
         "linux")
@@ -93,6 +123,7 @@ push()
         "all")
             push-linux
             push-windows
+            ;;
         *)
             echo "Missing sub argument"
             ;;
@@ -103,17 +134,17 @@ push()
 # Invocation
 #
 
-command=$(echo $1 | tr '[:upper:]' '[:lower:]')
+command=$(echo "$1" | tr "[:upper:]" "[:lower:]")
 
 case $command in
     "environment")
         environment
         ;;
     "build")
-        build $2
+        build "$2"
         ;;
     "push")
-        push $2
+        push "$2"
         ;;
     *)
         echo "Missing argument"

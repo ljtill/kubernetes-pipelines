@@ -25,7 +25,7 @@ publish()
 # Invocation
 #
 
-command=$(echo $1 | tr '[:upper:]' '[:lower:]')
+command=$(echo "$1" | tr "[:upper:]" "[:lower:]")
 
 case $command in
     "build")
