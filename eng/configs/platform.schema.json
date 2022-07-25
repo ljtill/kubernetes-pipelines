@@ -5,8 +5,6 @@
     "type": "object",
     "required": [
         "services",
-        "zones",
-        "endpoints",
         "clusters"
     ],
     "properties": {
@@ -54,66 +52,6 @@
                             "type": "string"
                         }
                     }
-                }
-            }
-        },
-        "zones": {
-            "title": "The zones Schema",
-            "type": "object",
-            "required": [
-                "subscription",
-                "resourceGroup",
-                "location",
-                "properties"
-            ],
-            "properties": {
-                "subscription": {
-                    "title": "The subscription Schema",
-                    "type": "string"
-                },
-                "resourceGroup": {
-                    "title": "The resourceGroup Schema",
-                    "type": "string"
-                },
-                "location": {
-                    "title": "The location Schema",
-                    "type": "string"
-                },
-                "properties": {
-                    "title": "The properties Schema",
-                    "type": "object",
-                    "required": [],
-                    "properties": {}
-                }
-            }
-        },
-        "endpoints": {
-            "title": "The endpoints Schema",
-            "type": "object",
-            "required": [
-                "subscription",
-                "resourceGroup",
-                "location",
-                "properties"
-            ],
-            "properties": {
-                "subscription": {
-                    "title": "The subscription Schema",
-                    "type": "string"
-                },
-                "resourceGroup": {
-                    "title": "The resourceGroup Schema",
-                    "type": "string"
-                },
-                "location": {
-                    "title": "The location Schema",
-                    "type": "string"
-                },
-                "properties": {
-                    "title": "The properties Schema",
-                    "type": "object",
-                    "required": [],
-                    "properties": {}
                 }
             }
         },
