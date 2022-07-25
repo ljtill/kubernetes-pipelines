@@ -6,8 +6,8 @@ set -e
 # Variables
 #
 
-namespace=""
-runtime=""
+namespace="functions-system"
+runtime="functions"
 
 #
 # Environment
@@ -16,10 +16,12 @@ runtime=""
 environment()
 {
     echo "=> Checking environment variables..."
-	if [[ -z "$(NAMESPACE)" || -z "$(RUNTIME_NAME)" || -z "$(REGISTRY_NAME)" ]]; then \
-		echo "Missing required environment variables"; \
-		exit 1; \
-	fi
+
+    if [[ -z "$REGISTRY" ]]; then
+        echo "Missing required environment variable (REGISTRY)"
+        exit 1
+    fi
+    echo "==> Reading variable - REGISTRY :: $REGISTRY"
 }
 
 #
@@ -28,8 +30,8 @@ environment()
 
 login()
 {
-    echo '=> Authenticating session...'
-    az acr login --name $(REGISTRY_NAME)
+    echo "=> Authenticating session..."
+    az acr login --name "$REGISTRY"
 }
 
 #
@@ -38,7 +40,7 @@ login()
 
 build()
 {
-    echo '=> Building...'
+    echo "=> Building..."
     # TODO: Add dotnet build instructions
 }
 
@@ -48,8 +50,18 @@ build()
 
 clean()
 {
-    echo '=> Cleaning...'
+    echo "=> Cleaning..."
     # TODO: Add dotnet clean instructions
+}
+
+#
+# Run
+#
+
+run()
+{
+    echo "=> Running functions host..."
+    # TODO: Add func host start instructions
 }
 
 #
@@ -59,10 +71,10 @@ clean()
 deploy()
 {
     echo "=> Deploying runtime..."
-	kubectl create namespace $(NAMESPACE)
-	func kubernetes deploy --name $(RUNTIME_NAME) --image-name runtime/$(RUNTIME_NAME) --registry $(REGISTRY_NAME).azurecr.io/runtime --min-replicas 1 --namespace $(NAMESPACE) --write-config
-	kubectl create serviceaccount $(RUNTIME_NAME)-host -n $(NAMESPACE)
-	kubectl create clusterrolebinding $(RUNTIME_NAME) --clusterrole=cluster-admin --serviceaccount=$(NAMESPACE):$(RUNTIME_NAME)-host
+	kubectl create namespace "$namespace"
+	func kubernetes deploy --name "$runtime" --image-name "runtime/$runtime" --registry "$REGISTRY.azurecr.io/runtime" --min-replicas 1 --namespace "$namespace" --write-config
+	kubectl create serviceaccount "$runtime-host" -n "$namespace"
+	kubectl create clusterrolebinding "$runtime" --clusterrole=cluster-admin --serviceaccount="$namespace:$runtime-host"
 }
 
 #
@@ -72,17 +84,17 @@ deploy()
 delete()
 {
     echo "=> Destroying runtime..."
-	kubectl delete clusterrolebinding $(RUNTIME_NAME) --ignore-not-found=true
-	kubectl delete serviceaccount $(RUNTIME_NAME)-host -n $(NAMESPACE) --ignore-not-found=true
-	func kubernetes delete --name $(RUNTIME_NAME) --image-name runtime/$(RUNTIME_NAME) --registry $(REGISTRY_NAME).azurecr.io/runtime --namespace $(NAMESPACE)
-	kubectl delete namespace $(NAMESPACE)
+	kubectl delete clusterrolebinding "$runtime" --ignore-not-found=true
+	kubectl delete serviceaccount "$runtime-host" -n "$namespace" --ignore-not-found=true
+	func kubernetes delete --name "$runtime" --image-name "runtime/$runtime" --registry "$REGISTRY.azurecr.io/runtime" --namespace "$namespace"
+	kubectl delete namespace "$namespace"
 }
 
 #
 # Invocation
 #
 
-command=$(echo $1 | tr '[:upper:]' '[:lower:]')
+command=$(echo "$1" | tr "[:upper:]" "[:lower:]")
 
 case $command in
     "login")
