@@ -195,8 +195,8 @@ resource securityGroup 'Microsoft.Network/networkSecurityGroups@2021-08-01' = {
 // Virtual Network Links
 resource links 'Microsoft.Resources/deployments@2021-04-01' = {
   name: 'Microsoft.Bicep.Resources.Network'
-  subscriptionId: zones.subscription
-  resourceGroup: zones.resourceGroup
+  subscriptionId: services.subscription
+  resourceGroup: services.resourceGroup
   properties: {
     mode: 'Incremental'
     template: {
@@ -337,11 +337,27 @@ module diagnostics './resources.diagnostics.bicep' = {
   ]
 }
 
+module endpoints './resources.endpoints.bicep' = {
+  name: 'Microsoft.Bicep.Resources.Endpoints.${cluster.properties.country}'
+  params: {
+    services: services
+    cluster: cluster
+  }
+  dependsOn: [
+    serviceBus
+    keyVault
+    storageAccount
+    managedCluster
+    virtualNetwork
+    securityGroup
+  ]
+}
+
 // ---------
 // Variables
 // ---------
 
-var kubernetesVersion = '1.22.6'
+var kubernetesVersion = '1.22.11'
 var inboundConnections = [
   '20.37.194.0/24' // Australia East
   '20.42.226.0/24' // Australia South East
@@ -366,5 +382,4 @@ var inboundConnections = [
 // ----------
 
 param services object
-param zones object
 param cluster object
