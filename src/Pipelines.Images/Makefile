@@ -1,19 +1,19 @@
 EXEC_PATH = "../scripts/images.sh"
 
 build:
-	$(EXEC_PATH) build all
+	@$(EXEC_PATH) build all
 
 build-linux:
-	$(EXEC_PATH) build linux
+	@$(EXEC_PATH) build linux
 
 build-windows:
-	$(EXEC_PATH) build windows
+	@$(EXEC_PATH) build windows
 
 push:
-	$(EXEC_PATH) push all
+	@$(EXEC_PATH) push all
 
 push-linux:
-	$(EXEC_PATH) push linux
+	@$(EXEC_PATH) push linux
 
 push-windows:
-	$(EXEC_PATH) push windows
+	@$(EXEC_PATH) push windows

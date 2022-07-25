@@ -28,7 +28,7 @@ environment()
         echo "Missing required environment variable (RESOURCE_GROUP)"
         exit 1
     fi
-    echo "==> Reading  variable - RESOURCE_GROUP :: $RESOURCE_GROUP"
+    echo "==> Reading variable - RESOURCE_GROUP :: $RESOURCE_GROUP"
 
     if [[ -z "$CLUSTER_NAME" ]]; then
         echo "Missing required environment variable (CLUSTER_NAME)"
