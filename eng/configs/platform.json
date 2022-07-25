@@ -10,18 +10,6 @@
             "clientAddress": ""
         }
     },
-    "zones": {
-        "subscription": "",
-        "resourceGroup": "",
-        "location": "",
-        "properties": {}
-    },
-    "endpoints": {
-        "subscription": "",
-        "resourceGroup": "",
-        "location": "",
-        "properties": {}
-    },
     "clusters": [
         {
             "subscription": "",
