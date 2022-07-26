@@ -4,7 +4,6 @@
         "subscription": "",
         "resourceGroup": "",
         "name": "",
-        "description": "",
         "location": "",
         "properties": {
             "clientAddress": ""
@@ -15,7 +14,6 @@
             "subscription": "",
             "resourceGroup": "",
             "name": "",
-            "description": "",
             "location": "",
             "properties": {
                 "country": ""

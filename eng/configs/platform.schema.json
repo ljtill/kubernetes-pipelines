@@ -15,7 +15,6 @@
                 "subscription",
                 "resourceGroup",
                 "name",
-                "description",
                 "location",
                 "properties"
             ],
@@ -30,10 +29,6 @@
                 },
                 "name": {
                     "title": "The name Schema",
-                    "type": "string"
-                },
-                "description": {
-                    "title": "The description Schema",
                     "type": "string"
                 },
                 "location": {
@@ -65,7 +60,6 @@
                     "subscription",
                     "resourceGroup",
                     "name",
-                    "description",
                     "location",
                     "properties"
                 ],
@@ -80,10 +74,6 @@
                     },
                     "name": {
                         "title": "The name Schema",
-                        "type": "string"
-                    },
-                    "description": {
-                        "title": "The description Schema",
                         "type": "string"
                     },
                     "location": {
