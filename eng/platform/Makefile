@@ -9,12 +9,6 @@ validate:
 bootstrap:
 	@$(EXEC_PATH) bootstrap all
 
-bootstrap-identity:
-	@$(EXEC_PATH) bootstrap identity
-
-bootstrap-autoscaler:
-	@$(EXEC_PATH) bootstrap autoscaler
-
 delete:
 	@$(EXEC_PATH) delete
 
