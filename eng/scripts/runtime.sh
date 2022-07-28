@@ -6,7 +6,6 @@ set -e
 # Variables
 #
 
-namespace="functions-system"
 runtime="functions"
 
 #
@@ -17,11 +16,11 @@ environment()
 {
     echo "=> Checking environment variables..."
 
-    if [[ -z "$REGISTRY" ]]; then
-        echo "Missing required environment variable (REGISTRY)"
+    if [[ -z "$REGISTRY_NAME" ]]; then
+        echo "Missing required environment variable (REGISTRY_NAME)"
         exit 1
     fi
-    echo "==> Reading variable - REGISTRY :: $REGISTRY"
+    echo "==> Reading variable - REGISTRY_NAME :: $REGISTRY_NAME"
 }
 
 #
@@ -31,7 +30,7 @@ environment()
 login()
 {
     echo "=> Authenticating session..."
-    az acr login --name "$REGISTRY"
+    az acr login --name "$REGISTRY_NAME"
 }
 
 #
@@ -40,8 +39,21 @@ login()
 
 build()
 {
-    echo "=> Building..."
-    # TODO: Add dotnet build instructions
+    echo -e "\n=> Building runtime..."
+    dotnet build Pipelines.Runtime.csproj -c Release
+
+    echo -e "\n=> Building image..."
+    docker build -t $REGISTRY_NAME.azurecr.io/runtimes/functions:latest .
+}
+
+#
+# Push
+#
+
+push()
+{
+    echo "=> Pushing image..."
+    docker push $REGISTRY_NAME.azurecr.io/runtimes/functions:latest
 }
 
 #
@@ -51,7 +63,7 @@ build()
 clean()
 {
     echo "=> Cleaning..."
-    # TODO: Add dotnet clean instructions
+    dotnet build Pipelines.Runtime.csproj
 }
 
 #
@@ -61,7 +73,7 @@ clean()
 run()
 {
     echo "=> Running functions host..."
-    # TODO: Add func host start instructions
+    func host start
 }
 
 #
@@ -71,10 +83,24 @@ run()
 deploy()
 {
     echo "=> Deploying runtime..."
-	kubectl create namespace "$namespace"
-	func kubernetes deploy --name "$runtime" --image-name "runtime/$runtime" --registry "$REGISTRY.azurecr.io/runtime" --min-replicas 1 --namespace "$namespace" --write-config
-	kubectl create serviceaccount "$runtime-host" -n "$namespace"
-	kubectl create clusterrolebinding "$runtime" --clusterrole=cluster-admin --serviceaccount="$namespace:$runtime-host"
+
+    if [[ -z "$(kubectl get namespace -o json | jq -r '.items[] | select(.metadata.name == "functions-system")')" ]]; then
+        echo "==> Creating kubernetes namespace..."
+        kubectl create namespace functions-system
+    else
+        echo "==> Skipping kubernetes namespace creation..."
+    fi
+
+    if [[ -z "$(kubectl get deployment -n functions-system -o json | jq -r '.items[] | select(.metadata.name == "functions")')" ]]; then
+        echo "==> Creating kubernetes deployment..."
+        kubectl apply -f ./functions.yaml
+        # func kubernetes deploy --name "$runtime" --image-name "runtime/$runtime" --registry "$REGISTRY_NAME.azurecr.io/runtime" --min-replicas 1 --namespace "$namespace" --write-config
+    else
+        echo "==> Skipping kubernetes deployment creation..."
+    fi
+
+    # kubectl create serviceaccount "$runtime-host" -n "$namespace"
+    # kubectl create clusterrolebinding "$runtime" --clusterrole=cluster-admin --serviceaccount="$namespace:$runtime-host"
 }
 
 #
@@ -84,10 +110,35 @@ deploy()
 delete()
 {
     echo "=> Destroying runtime..."
-	kubectl delete clusterrolebinding "$runtime" --ignore-not-found=true
-	kubectl delete serviceaccount "$runtime-host" -n "$namespace" --ignore-not-found=true
-	func kubernetes delete --name "$runtime" --image-name "runtime/$runtime" --registry "$REGISTRY.azurecr.io/runtime" --namespace "$namespace"
-	kubectl delete namespace "$namespace"
+
+    if [[ -z "$(kubectl get clusterrolebinding -o json | jq -r '.items[] | select(.metadata.name == "functions")')" ]]; then
+        echo "==> Deleting kubernetes cluster role binding..."
+        kubectl delete clusterrolebinding functions
+    else
+        echo "==> Skipping kubernetes cluster role binding deletion..."
+    fi
+
+    if [[ -z "$(kubectl get serviceaccount -n functions-system -o json | jq -r '.items[] | select(.metadata.name == "functions")')" ]]; then
+        echo "==> Deleting kubernetes service account..."
+        kubectl delete serviceaccount functions -n functions-system
+    else
+        echo "==> Skipping kubernetes service account deletion..."
+    fi
+
+    if [[ -z "$(kubectl get deployment -n functions-system -o json | jq -r '.items[] | select(.metadata.name == "functions")')" ]]; then
+        echo "==> Deleting kubernetes deployment..."
+        kubectl delete -f ./functions.yaml
+        #func kubernetes delete --name "$runtime" --image-name "runtime/$runtime" --registry "$REGISTRY_NAME.azurecr.io/runtime" --namespace "$namespace"
+    else
+        echo "==> Skipping kubernetes deployment deletion..."
+    fi
+
+    if [[ -z "$(kubectl get namespace -o json | jq -r '.items[] | select(.metadata.name == "functions-system")')" ]]; then
+        echo "==> Deleting kubernetes namespace..."
+        kubectl delete namespace functions-system
+    else
+        echo "==> Skipping kubernetes namespace deletion..."
+    fi
 }
 
 #
@@ -105,13 +156,19 @@ case $command in
         environment
         build
         ;;
-    "clean")
+    "push")
         environment
+        push
+        ;;
+    "clean")
         clean
+        ;;
+    "run")
+        run
         ;;
     "deploy")
         environment
-        delete
+        deploy
         ;;
     "delete")
         environment

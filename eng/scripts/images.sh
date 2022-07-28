@@ -14,30 +14,17 @@ environment()
 {
     echo "=> Checking environment variables..."
 
-    if [[ -z "$RESOURCE_GROUP" ]]; then
-        echo "Missing required environment variable (RESOURCE_GROUP)"
-        exit 1
-    fi
-    echo "==> Reading  variable - RESOURCE_GROUP :: $RESOURCE_GROUP"
-
-    if [[ -z "$CLUSTER_NAME" ]]; then
-        echo "Missing required environment variable (CLUSTER_NAME)"
-        exit 1
-    fi
-    echo "==> Reading variable - CLUSTER_NAME :: $CLUSTER_NAME"
-
     if [[ -z "$REGISTRY_NAME" ]]; then
         echo "Missing required environment variable (REGISTRY_NAME)"
         exit 1
     fi
-    echo "==> Reading variable - CLUSTER_NAME :: $REGISTRY_NAME"
-
+    echo "==> Reading variable - REGISTRY_NAME :: $REGISTRY_NAME"
 
     if [[ -z "$IMAGE_NAME" ]]; then
-        echo "Missing required environment variable (CLUSTER_NAME)"
+        echo "Missing required environment variable (IMAGE_NAME)"
         exit 1
     fi
-    echo "==> Reading variable - CLUSTER_NAME :: $IMAGE_NAME"
+    echo "==> Reading variable - IMAGE_NAME :: $IMAGE_NAME"
 }
 
 #

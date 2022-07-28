@@ -1,4 +1,4 @@
-EXEC_PATH = "../scripts/runtime.sh"
+EXEC_PATH = "../../eng/scripts/runtime.sh"
 
 login:
 	@$(EXEC_PATH) login
@@ -6,8 +6,15 @@ login:
 build:
 	@$(EXEC_PATH) build
 
+
+push:
+	@$(EXEC_PATH) push
+
 clean:
 	@$(EXEC_PATH) clean
+
+run:
+	@$(EXEC_PATH) run
 
 deploy:
 	@$(EXEC_PATH) deploy
