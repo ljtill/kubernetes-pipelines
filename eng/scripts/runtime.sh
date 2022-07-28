@@ -56,7 +56,6 @@ push()
     docker push $REGISTRY_NAME.azurecr.io/runtimes/functions:latest
 }
 
-
 #
 # Clean
 #
@@ -111,10 +110,35 @@ deploy()
 delete()
 {
     echo "=> Destroying runtime..."
-	kubectl delete clusterrolebinding "$runtime" --ignore-not-found=true
-	kubectl delete serviceaccount "$runtime-host" -n "$namespace" --ignore-not-found=true
-	func kubernetes delete --name "$runtime" --image-name "runtime/$runtime" --registry "$REGISTRY_NAME.azurecr.io/runtime" --namespace "$namespace"
-	kubectl delete namespace "$namespace"
+
+    if [[ -z "$(kubectl get clusterrolebinding -o json | jq -r '.items[] | select(.metadata.name == "functions")')" ]]; then
+        echo "==> Deleting kubernetes cluster role binding..."
+        kubectl delete clusterrolebinding functions
+    else
+        echo "==> Skipping kubernetes cluster role binding deletion..."
+    fi
+
+    if [[ -z "$(kubectl get serviceaccount -n functions-system -o json | jq -r '.items[] | select(.metadata.name == "functions")')" ]]; then
+        echo "==> Deleting kubernetes service account..."
+        kubectl delete serviceaccount functions -n functions-system
+    else
+        echo "==> Skipping kubernetes service account deletion..."
+    fi
+
+    if [[ -z "$(kubectl get deployment -n functions-system -o json | jq -r '.items[] | select(.metadata.name == "functions")')" ]]; then
+        echo "==> Deleting kubernetes deployment..."
+        kubectl delete -f ./functions.yaml
+        #func kubernetes delete --name "$runtime" --image-name "runtime/$runtime" --registry "$REGISTRY_NAME.azurecr.io/runtime" --namespace "$namespace"
+    else
+        echo "==> Skipping kubernetes deployment deletion..."
+    fi
+
+    if [[ -z "$(kubectl get namespace -o json | jq -r '.items[] | select(.metadata.name == "functions-system")')" ]]; then
+        echo "==> Deleting kubernetes namespace..."
+        kubectl delete namespace functions-system
+    else
+        echo "==> Skipping kubernetes namespace deletion..."
+    fi
 }
 
 #
