@@ -24,11 +24,11 @@ environment()
     fi
     echo "==> Reading variable - TENANT_ID :: $TENANT_ID"
 
-    if [[ -z "$RESOURCE_GROUP" ]]; then
-        echo "Missing required environment variable (RESOURCE_GROUP)"
+    if [[ -z "$RESOURCE_GROUP_NAME" ]]; then
+        echo "Missing required environment variable (RESOURCE_GROUP_NAME)"
         exit 1
     fi
-    echo "==> Reading variable - RESOURCE_GROUP :: $RESOURCE_GROUP"
+    echo "==> Reading variable - RESOURCE_GROUP_NAME :: $RESOURCE_GROUP_NAME"
 
     if [[ -z "$CLUSTER_NAME" ]]; then
         echo "Missing required environment variable (CLUSTER_NAME)"
@@ -220,15 +220,18 @@ bootstrap_identity()
         echo "==> Skipping kubernetes service account creation..."
     fi
 
-
     if [[ -z "$(az rest --method GET --uri "https://graph.microsoft.com/beta/applications/$object_id/federatedIdentityCredentials" | jq -r '.value[]')" ]]; then
         echo "==> Creating federated credentials..."
-        issuer_url=$(az aks show --name "$CLUSTER_NAME" --resource-group "$RESOURCE_GROUP" --query "oidcIssuerProfile.issuerUrl" -o tsv)
+        issuer_url=$(az aks show --name "$CLUSTER_NAME" --resource-group "$RESOURCE_GROUP_NAME" --query "oidcIssuerProfile.issuerUrl" -o tsv)
         rest_body="{\"name\": \"kubernetes-federated-credential\", \"issuer\": \"$issuer_url\", \"subject\": \"system:serviceaccount:functions-system:workload-identity-sa\", \"description\": \"TBD\", \"audiences\": [\"api://AzureADTokenExchange\"]}"
         az rest --method POST --uri "https://graph.microsoft.com/beta/applications/$object_id/federatedIdentityCredentials" --body "$rest_body" -o none
     else
         echo "==> Skipping federated credentials creation..."
     fi
+
+    # TODO(ljtill): Assign Service Principal to Service Bus Queues -- Receiver / Sender
+    # TODO(ljtill): Assign Service Principal to Key Vault
+    # TODO(ljtill): Assign Service Princiapl to Storage Account
 }
 
 #

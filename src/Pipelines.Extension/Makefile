@@ -1,4 +1,4 @@
-EXEC_PATH = "../scripts/extension.sh"
+EXEC_PATH = "../../eng/scripts/extension.sh"
 
 build:
 	@$(EXEC_PATH) build

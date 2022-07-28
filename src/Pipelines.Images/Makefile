@@ -1,4 +1,4 @@
-EXEC_PATH = "../scripts/images.sh"
+EXEC_PATH = "../../eng/scripts/images.sh"
 
 build:
 	@$(EXEC_PATH) build all
