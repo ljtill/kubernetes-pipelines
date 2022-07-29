@@ -6,21 +6,21 @@ set -e
 # Variables
 #
 
-runtime="functions"
-
 #
 # Environment
 #
 
 environment()
 {
-    echo "=> Checking environment variables..."
+    echo "=> Loading configuration variables..."
 
-    if [[ -z "$REGISTRY_NAME" ]]; then
-        echo "Missing required environment variable (REGISTRY_NAME)"
-        exit 1
-    fi
-    echo "==> Reading variable - REGISTRY_NAME :: $REGISTRY_NAME"
+    # TODO(ljtill): Handle multiple cluster configurations
+    config_data=$(cat ../../eng/configs/platform.local.json)
+    service_name=$(echo $config_data | jq -r '.services.name')
+    cluster_name=$(echo $config_data | jq -r '.clusters[0].name')
+
+    # TODO(ljtill): Handle multiple applications
+    app_id=$(az ad app list --display-name 'Pipelines' -o json | jq -r '.[0].appId')
 }
 
 #
@@ -30,7 +30,7 @@ environment()
 login()
 {
     echo "=> Authenticating session..."
-    az acr login --name "$REGISTRY_NAME"
+    az acr login --name "$service_name"
 }
 
 #
@@ -43,7 +43,28 @@ build()
     dotnet build Pipelines.Runtime.csproj -c Release
 
     echo -e "\n=> Building image..."
-    docker build -t $REGISTRY_NAME.azurecr.io/runtimes/functions:latest .
+    docker build -t $service_name.azurecr.io/runtimes/functions:latest .
+}
+
+#
+# Generate
+# Provides the ability to generate the Kubernetes manifest from the Configuration Metadata
+#
+
+generate()
+{
+    echo "=> Generating deployment files..."
+
+    rm ./functions.local.yaml
+
+    echo "==> Copying kubernetes manifest..."
+    cp ./functions.yaml functions.local.yaml
+
+    echo "==> Replacing manifest value..."
+    sed -i "s/<StorageAccountName>/$cluster_name/g" ./functions.local.yaml
+    sed -i "s/<ServiceBusName>/$cluster_name/g" ./functions.local.yaml
+    sed -i "s/<RegistryName>/$service_name/g" ./functions.local.yaml
+    sed -i "s/<ClientId>/$app_id/g" ./functions.local.yaml
 }
 
 #
@@ -53,7 +74,7 @@ build()
 push()
 {
     echo "=> Pushing image..."
-    docker push $REGISTRY_NAME.azurecr.io/runtimes/functions:latest
+    docker push $service_name.azurecr.io/runtimes/functions:latest
 }
 
 #
@@ -72,7 +93,7 @@ clean()
 
 run()
 {
-    echo "=> Running functions host..."
+    echo "=> Starting functions host..."
     func host start
 }
 
@@ -98,9 +119,6 @@ deploy()
     else
         echo "==> Skipping kubernetes deployment creation..."
     fi
-
-    # kubectl create serviceaccount "$runtime-host" -n "$namespace"
-    # kubectl create clusterrolebinding "$runtime" --clusterrole=cluster-admin --serviceaccount="$namespace:$runtime-host"
 }
 
 #
@@ -110,20 +128,6 @@ deploy()
 delete()
 {
     echo "=> Destroying runtime..."
-
-    if [[ -z "$(kubectl get clusterrolebinding -o json | jq -r '.items[] | select(.metadata.name == "functions")')" ]]; then
-        echo "==> Deleting kubernetes cluster role binding..."
-        kubectl delete clusterrolebinding functions
-    else
-        echo "==> Skipping kubernetes cluster role binding deletion..."
-    fi
-
-    if [[ -z "$(kubectl get serviceaccount -n functions-system -o json | jq -r '.items[] | select(.metadata.name == "functions")')" ]]; then
-        echo "==> Deleting kubernetes service account..."
-        kubectl delete serviceaccount functions -n functions-system
-    else
-        echo "==> Skipping kubernetes service account deletion..."
-    fi
 
     if [[ -z "$(kubectl get deployment -n functions-system -o json | jq -r '.items[] | select(.metadata.name == "functions")')" ]]; then
         echo "==> Deleting kubernetes deployment..."
@@ -155,6 +159,10 @@ case $command in
     "build")
         environment
         build
+        ;;
+    "generate")
+        environment
+        generate
         ;;
     "push")
         environment
