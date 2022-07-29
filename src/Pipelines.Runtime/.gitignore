@@ -5,7 +5,7 @@
 local.settings.json
 
 # Kubernetes file
-functions.yaml
+functions.local.yaml
 
 # User-specific files
 *.suo
