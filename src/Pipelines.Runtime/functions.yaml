@@ -1,0 +1,111 @@
+data:
+  AzureWebStorage__accountName: <StorageAccountName>
+  FUNCTIONS_WORKER_RUNTIME: dotnet
+  ServiceBusConnection__fullyQualifiedNamespace: <ServiceBusName>.servicebus.windows.net
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: functions
+  namespace: functions-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: functions
+  namespace: functions-system
+  labels:
+    app: functions
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: functions
+  template:
+    metadata:
+      labels:
+        app: functions
+    spec:
+      serviceAccountName: functions
+      containers:
+      - name: functions
+        image: <RegistryName>.azurecr.io/runtimes/functions:latest
+        env:
+        - name: AzureFunctionsJobHost__functions__0
+          value: Create
+        - name: AzureFunctionsJobHost__functions__1
+          value: Delete
+        - name: AzureFunctionsJobHost__functions__2
+          value: Maintain
+        - name: AzureFunctionsJobHost__functions__3
+          value: Process
+        envFrom:
+        - configMapRef:
+            name: functions
+        readinessProbe:
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 240
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+        startupProbe:
+          failureThreshold: 3
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 240
+          httpGet:
+            path: /
+            port: 80
+            scheme: HTTP
+---
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: functions
+  namespace: functions-system
+  labels: {}
+spec:
+  scaleTargetRef:
+    name: functions
+  minReplicaCount: 1
+  triggers:
+  - type: azure-servicebus
+    metadata:
+      queueName: create
+      connectionFromEnv: ServiceBusConnection
+  - type: azure-servicebus
+    metadata:
+      queueName: delete
+      connectionFromEnv: ServiceBusConnection
+  - type: timertrigger
+    metadata:
+      schedule: 0 */5 * * * *
+  - type: azure-servicebus
+    metadata:
+      queueName: process
+      connectionFromEnv: ServiceBusConnection
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: functions
+  namespace: functions-system
+  annotations:
+    azure.workload.identity/client-id: <ClientId>
+  labels:
+    azure.workload.identity/use: "true"
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: functions
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: functions
+  namespace: functions-system
