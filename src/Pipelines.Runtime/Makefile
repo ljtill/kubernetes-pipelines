@@ -6,6 +6,8 @@ login:
 build:
 	@$(EXEC_PATH) build
 
+generate:
+	@$(EXEC_PATH) generate
 
 push:
 	@$(EXEC_PATH) push
