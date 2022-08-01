@@ -3,10 +3,6 @@
 set -e
 
 #
-# Variables
-#
-
-#
 # Environment
 #
 
@@ -16,8 +12,8 @@ environment()
 
     # TODO(ljtill): Handle multiple cluster configurations
     config_data=$(cat ../../eng/configs/platform.local.json)
-    service_name=$(echo $config_data | jq -r '.services.name')
-    cluster_name=$(echo $config_data | jq -r '.clusters[0].name')
+    service_name=$(echo "$config_data" | jq -r '.services.name')
+    cluster_name=$(echo "$config_data" | jq -r '.clusters[0].name')
 
     # TODO(ljtill): Handle multiple applications
     app_id=$(az ad app list --display-name 'Pipelines' -o json | jq -r '.[0].appId')
@@ -43,7 +39,7 @@ build()
     dotnet build Pipelines.Runtime.csproj -c Release
 
     echo -e "\n=> Building image..."
-    docker build -t $service_name.azurecr.io/runtimes/functions:latest .
+    docker build -t "$service_name".azurecr.io/runtimes/functions:latest .
 }
 
 #
@@ -74,7 +70,7 @@ generate()
 push()
 {
     echo "=> Pushing image..."
-    docker push $service_name.azurecr.io/runtimes/functions:latest
+    docker push "$service_name".azurecr.io/runtimes/functions:latest
 }
 
 #
@@ -129,7 +125,7 @@ delete()
 {
     echo "=> Destroying runtime..."
 
-    if [[ -z "$(kubectl get deployment -n functions-system -o json | jq -r '.items[] | select(.metadata.name == "functions")')" ]]; then
+    if [[ -n "$(kubectl get deployment -n functions-system -o json | jq -r '.items[] | select(.metadata.name == "functions")')" ]]; then
         echo "==> Deleting kubernetes deployment..."
         kubectl delete -f ./functions.yaml
         #func kubernetes delete --name "$runtime" --image-name "runtime/$runtime" --registry "$REGISTRY_NAME.azurecr.io/runtime" --namespace "$namespace"
@@ -137,7 +133,7 @@ delete()
         echo "==> Skipping kubernetes deployment deletion..."
     fi
 
-    if [[ -z "$(kubectl get namespace -o json | jq -r '.items[] | select(.metadata.name == "functions-system")')" ]]; then
+    if [[ -n "$(kubectl get namespace -o json | jq -r '.items[] | select(.metadata.name == "functions-system")')" ]]; then
         echo "==> Deleting kubernetes namespace..."
         kubectl delete namespace functions-system
     else
