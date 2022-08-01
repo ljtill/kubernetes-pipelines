@@ -21,5 +21,5 @@ run:
 deploy:
 	@$(EXEC_PATH) deploy
 
-destroy:
-	@$(EXEC_PATH) destroy
+delete:
+	@$(EXEC_PATH) delete
