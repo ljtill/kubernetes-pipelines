@@ -8,7 +8,7 @@ set -e
 
 environment()
 {
-    echo "=> Loading runtime variables..."
+    echo "=> Setting runtime variables..."
 
     tenant_id=$(az account show -o json | jq -r '.tenantId')
     config_path="../configs/platform.local.json"
@@ -16,8 +16,6 @@ environment()
     deployment_name="Microsoft.Bicep.Resources"
     location="Norway East"
     app_name="Pipelines"
-
-    # TODO(ljtill): Check environment connection - kubectl & helm
 }
 
 #
@@ -55,55 +53,26 @@ delete()
 {
     echo "=> Deleting platform..."
 
+    # TODO: Iterate over all cluster subscriptions
+    # TODO: Check if deletion is necessary
+
     echo "==> Removing cluster resources..."
+    echo "$config_data" | jq -r '.clusters[0].subscription' | xargs -rtL1 az account set --subscription
     echo "$config_data" | jq -r ".clusters[].resourceGroup" | xargs -rtL1 az group delete --yes --name
 
     echo "==> Removing service resources..."
+    echo "$config_data" | jq -r '.services.subscription' | xargs -rtL1 az account set --subscription
     echo "$config_data" | jq -r ".services.resourceGroup" | xargs -rtL1 az group delete --yes --name
 
-    if [[ -z "$(az ad app list --display-name "$app_name" -o json | jq -r '.[]')" ]]; then
+    echo "==> Purging key vaults..."
+    az keyvault list-deleted -o json | jq -r '.[].name' | xargs -rtL1 az keyvault purge --name
+
+    if [[ -n "$(az ad app list --display-name "$app_name" -o json | jq -r '.[]')" ]]; then
         echo "==> Deleting azure ad application..."
         app_id=$(az ad app list --display-name "$app_name" -o json | jq -r '.[].appId')
-        az ad app delete --id "" -o none
+        az ad app delete --id "$app_id" -o none
     else
         echo "==> Skipping azure ad application deletion..."
-    fi
-
-    echo "=> Purging vaults..."
-    az keyvault list-deleted -o json | jq -r '.[].name' | xargs -rtL1 az keyvault purge --name
-}
-
-delete_autoscaler()
-{
-    if [[ -n "$(helm list --namespace keda-system -o json | jq -r '.[] | select(.name == "keda")')" ]]; then
-        echo "==> Uninstalling helm chart...."
-        helm uninstall keda --namespace keda-system
-    else
-        echo "==> Skipping helm chart installation..."
-    fi
-
-    if [[ -n "$(kubectl get namespace -o json | jq -r '.items[] | select(.metadata.name == "keda-system")')" ]]; then
-        echo "==> Deleting kubernetes namespace..."
-        kubectl delete namespace keda-system
-    else
-        echo "==> Skipping kubernetes namespace deletion..."
-    fi
-}
-
-delete_identity()
-{
-    if [[ -n "$(helm list --namespace workload-identity-system -o json | jq -r '.[] | select(.name == "workload-identity-webhook")')" ]]; then
-        echo "==> Uninstall helm chart..."
-        helm uninstall workload-identity-webhook --namespace azure-workload-identity-system
-    else
-        echo "==> Skipping helm chart installation..."
-    fi
-
-    if [[ -n "$(kubectl get namespace -o json | jq -r '.items[] | select(.metadata.name == "workload-identity-system")')" ]]; then
-        echo "==> Deleting kubernetes namespace..."
-        kubectl delete namespace workload-identity-system
-    else
-        echo "==> Skipping kubernetes namespace deletion..."
     fi
 }
 
@@ -121,11 +90,13 @@ validate()
 # Bootstrap
 #
 
-bootstrap_autoscaler()
+bootstrap()
 {
-    echo -e "\n=> Bootstrapping kubernetes autoscaler..."
+    echo -e "\n=> Bootstrapping platform..."
 
-    # Kubernetes
+    # Kubernetes Event Driven Autoscaler
+
+    echo "==> Installing kubernetes autoscaler..."
 
     if [[ -z "$(helm repo list -o json | jq -r '.[] | select(.name == "kedacore")')" ]]; then
         echo "==> Adding helm chart repo..."
@@ -150,13 +121,10 @@ bootstrap_autoscaler()
     else
         echo "==> Skipping helm chart installation..."
     fi
-}
 
-bootstrap_identity()
-{
-    echo -e "\n=> Bootstrapping azure workload identity..."
+    # Azure Workload Identity
 
-    # Azure Active Directory
+    echo "==> Installing azure workload identity..."
 
     app_metadata=$(az ad app list --display-name "$app_name" -o json)
     app_id=$(echo "$app_metadata" | jq -r ".[].appId")
@@ -170,8 +138,6 @@ bootstrap_identity()
     else
         echo "==> Skipping federated credentials creation..."
     fi
-
-    # Kubernetes
 
     if [[ -z "$(helm repo list -o json | jq -r '.[] | select(.name == "azure-workload-identity")')" ]]; then
         echo "==> Adding helm chart repo..."
@@ -205,9 +171,6 @@ bootstrap_identity()
 command=$(echo "$1" | tr "[:upper:]" "[:lower:]")
 
 case $command in
-    "environment")
-        environment
-        ;;
     "deploy")
         environment
         deploy
@@ -218,16 +181,11 @@ case $command in
         ;;
     "bootstrap")
         environment
-        bootstrap_autoscaler
-        bootstrap_identity
+        bootstrap
         ;;
     "delete")
         environment
         delete
-        ;;
-    "purge")
-        environment
-        purge
         ;;
     *)
         echo "Missing argument"
