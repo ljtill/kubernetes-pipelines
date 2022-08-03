@@ -11,6 +11,3 @@ bootstrap:
 
 delete:
 	@$(EXEC_PATH) delete
-
-purge:
-	@$(EXEC_PATH) purge
