@@ -71,7 +71,7 @@ public class ClusterClient
             await _kubernetes.CreateNamespacedDeploymentAsync(deployment, _userConfigOptions.ClusterNamespace);
 
             // Poller
-            // TODO(ljtill): Implement container poller
+            // TODO: Implement container poller
             await Task.Delay(30000);
 
             /*
@@ -112,7 +112,7 @@ public class ClusterClient
 
     // public async void DeleteNamespaceIfExistsAsync()
     // {
-    //     // TODO(ljtll): Implementation
+    //     // TODO: Implementation
     //     return;
     // }
 

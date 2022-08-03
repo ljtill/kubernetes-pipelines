@@ -20,7 +20,7 @@ public class Process
         }
         catch
         {
-            // TODO(ljtill): Write to runtime logger
+            // TODO: Write to runtime logger
             return;
         }
         finally
@@ -65,7 +65,7 @@ public class Process
             await taskLogger.LogErrorAsync(ex.Message);
 
             // Upload logs to pipeline
-            // TODO(ljtill): Review this design
+            // TODO: Review this design
             await taskLogger.UploadMessagesAsync();
         }
         finally

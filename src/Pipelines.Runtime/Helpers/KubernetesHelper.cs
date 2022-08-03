@@ -11,8 +11,8 @@ public static class KubernetesHelper
         {
             case "Development":
                 var filePath = GetClusterFilePath();
-                // TODO(ljtill): Remove context setting (azure)
-                // TODO(ljtill): Wire in ENV VAR for context value
+                // TODO: Remove context setting (azure)
+                // TODO: Wire in ENV VAR for context value
                 // NOTE: This uses the default context in the kubeconfig file
                 return k8s.KubernetesClientConfiguration.BuildConfigFromConfigFile(filePath, "azure");
             case "Production":
