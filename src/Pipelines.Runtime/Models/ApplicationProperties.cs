@@ -66,7 +66,7 @@ public class ApplicationProperties
         this.RequestType = ParseRequestType(messageProperties, RequestTypeKey);
     }
 
-    // TODO(ljtill): Move these methods into the TaskHelper class
+    // TODO: Move these methods into the TaskHelper class
     private static Guid ParseGuid(IDictionary<string, string> messageProperties, string propertyName)
     {
         var messageProperty = messageProperties[propertyName];

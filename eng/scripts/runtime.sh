@@ -10,12 +10,12 @@ environment()
 {
     echo "=> Loading configuration variables..."
 
-    # TODO(ljtill): Handle multiple cluster configurations
+    # TODO: Handle multiple cluster configurations
     config_data=$(cat ../../eng/configs/platform.local.json)
     service_name=$(echo "$config_data" | jq -r '.services.name')
     cluster_name=$(echo "$config_data" | jq -r '.clusters[0].name')
 
-    # TODO(ljtill): Handle multiple applications
+    # TODO: Handle multiple applications
     app_id=$(az ad app list --display-name 'Pipelines' -o json | jq -r '.[0].appId')
 }
 
