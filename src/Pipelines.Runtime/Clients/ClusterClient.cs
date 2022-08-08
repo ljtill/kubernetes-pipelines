@@ -63,11 +63,13 @@ public class ClusterClient
 
         // Initialize labels
         var labels = _clusterService.NewLabels(DefaultConfigOptions.AppName, _appProperties.PlanId);
+        var adoURL= SecretsHelper.GetAdoUrl();
+        var adoToken = SecretsHelper.GetADOToken();
 
         try
         {
             // Create deployment
-            var deployment = _clusterService.NewDeployment(labels, _userConfigOptions.AgentCount, _userConfigOptions.ImageName, _userConfigOptions.ImageTag, _userConfigOptions.PoolName);
+            var deployment = _clusterService.NewDeployment(labels, _userConfigOptions.AgentCount, _userConfigOptions.ImageName, _userConfigOptions.ImageTag, _userConfigOptions.PoolName, adoURL, adoToken);
             await _kubernetes.CreateNamespacedDeploymentAsync(deployment, _userConfigOptions.ClusterNamespace);
 
             // Poller

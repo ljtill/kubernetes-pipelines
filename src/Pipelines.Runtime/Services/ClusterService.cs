@@ -1,5 +1,7 @@
 using Pipelines.Runtime.Clients;
 using Pipelines.Runtime.Loggers;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Identity;
 
 namespace Pipelines.Runtime.Services;
 
@@ -144,7 +146,7 @@ public class ClusterService
         };
     }
 
-    public V1Deployment NewDeployment(Dictionary<string, string> labels, string agentCount, string imageName, string imageTag, string poolName)
+    public V1Deployment NewDeployment(Dictionary<string, string> labels, string agentCount, string imageName, string imageTag, string poolName, string adoURL, string adoToken)
     {
         return new V1Deployment
         {
@@ -181,19 +183,21 @@ public class ClusterService
                                     new()
                                     {
                                         Name = "AZP_URL",
-                                        Value = "https://dev.azure.com/lytill"
+                                        Value = adoURL
+                                        //Value = "https://dev.azure.com/lytill"
                                     },
                                     new()
                                     {
                                         Name = "AZP_TOKEN",
-                                        ValueFrom = new V1EnvVarSource
-                                        {
-                                            SecretKeyRef = new V1SecretKeySelector
-                                            {
-                                                Name = "azure",
-                                                Key = "token"
-                                            }
-                                        }
+                                        Value = adoToken
+                                        // ValueFrom = new V1EnvVarSource
+                                        // {
+                                        //     SecretKeyRef = new V1SecretKeySelector
+                                        //     {
+                                        //         Name = "azure",
+                                        //         Key = "token"
+                                        //     }
+                                        // }
                                     },
                                     new()
                                     {
