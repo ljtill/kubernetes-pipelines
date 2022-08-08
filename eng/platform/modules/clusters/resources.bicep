@@ -195,15 +195,19 @@ resource securityGroup 'Microsoft.Network/networkSecurityGroups@2021-08-01' = {
 // Service Bus
 resource serviceBusReceiverRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('ServiceBusDataReceiver', applicationId)
+  scope: serviceBus
   properties: {
     principalId: applicationId
+    principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.serviceBusDataReceiver)
   }
 }
 resource serviceBusSenderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('ServiceBusDataSender', applicationId)
+  scope: serviceBus
   properties: {
     principalId: applicationId
+    principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.serviceBusDataSender)
   }
 }
@@ -211,8 +215,10 @@ resource serviceBusSenderRoleAssignment 'Microsoft.Authorization/roleAssignments
 // Key Vault
 resource keyVaultSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('KeyVaultSecretsOfficer', applicationId)
+  scope: keyVault
   properties: {
     principalId: applicationId
+    principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.keyVaultSecretsOfficer)
   }
 }
@@ -220,29 +226,37 @@ resource keyVaultSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssig
 // Storage Account
 resource storageAccountBlobContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('StorageBlobDataContributor', applicationId)
+  scope: keyVault
   properties: {
     principalId: applicationId
+    principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.storageBlobDataContributor)
   }
 }
 resource storageAccountFileContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('StorageFileDataContributor', applicationId)
+  scope: keyVault
   properties: {
     principalId: applicationId
+    principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.storageFileDataContributor)
   }
 }
 resource storageAccountQueueContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('StorageQueueDataContributor', applicationId)
+  scope: keyVault
   properties: {
     principalId: applicationId
+    principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.storageQueueDataContributor)
   }
 }
 resource storageAccountTableContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
   name: guid('StorageTableDataContributor', applicationId)
+  scope: keyVault
   properties: {
     principalId: applicationId
+    principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.storageTableDataContributor)
   }
 }
@@ -357,8 +371,8 @@ resource authorization 'Microsoft.Resources/deployments@2021-04-01' = {
           name: guid(cluster.name)
           scope: containerRegistry.id
           properties: {
-            principalType: 'ServicePrincipal'
             principalId: managedCluster.properties.identityProfile.kubeletidentity.objectId
+            principalType: 'ServicePrincipal'
             roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d') // AcrPull
           }
         }
