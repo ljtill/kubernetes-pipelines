@@ -78,12 +78,12 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
       name: 'standard'
       family: 'A'
     }
-    accessPolicies: []
     networkAcls: {
       defaultAction: 'Deny'
       ipRules: []
       bypass: 'AzureServices'
     }
+    enableRbacAuthorization: true
     enableSoftDelete: false
   }
 }
@@ -189,6 +189,65 @@ resource securityGroup 'Microsoft.Network/networkSecurityGroups@2021-08-01' = {
 }
 
 // -----------
+// Assignments
+// -----------
+
+// Service Bus
+resource serviceBusReceiverRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('ServiceBusDataReceiver', applicationId)
+  properties: {
+    principalId: applicationId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.serviceBusDataReceiver)
+  }
+}
+resource serviceBusSenderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('ServiceBusDataSender', applicationId)
+  properties: {
+    principalId: applicationId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.serviceBusDataSender)
+  }
+}
+
+// Key Vault
+resource keyVaultSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('KeyVaultSecretsOfficer', applicationId)
+  properties: {
+    principalId: applicationId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.keyVaultSecretsOfficer)
+  }
+}
+
+// Storage Account
+resource storageAccountBlobContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('StorageBlobDataContributor', applicationId)
+  properties: {
+    principalId: applicationId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.storageBlobDataContributor)
+  }
+}
+resource storageAccountFileContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('StorageFileDataContributor', applicationId)
+  properties: {
+    principalId: applicationId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.storageFileDataContributor)
+  }
+}
+resource storageAccountQueueContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('StorageQueueDataContributor', applicationId)
+  properties: {
+    principalId: applicationId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.storageQueueDataContributor)
+  }
+}
+resource storageAccountTableContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid('StorageTableDataContributor', applicationId)
+  properties: {
+    principalId: applicationId
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleDefinitions.storageTableDataContributor)
+  }
+}
+
+// -----------
 // Deployments
 // -----------
 
@@ -281,6 +340,7 @@ resource links 'Microsoft.Resources/deployments@2021-04-01' = {
 }
 
 // Role Assignments
+// NOTE: Workaround for cross resource group role assignments
 resource authorization 'Microsoft.Resources/deployments@2021-04-01' = {
   name: 'Microsoft.Bicep.Authorization.Services'
   subscriptionId: services.subscription
@@ -376,6 +436,15 @@ var inboundConnections = [
   '40.74.28.0/23' // Western Europe
   '51.104.26.0/24' // United Kingdom South
 ]
+var roleDefinitions = {
+  serviceBusDataReceiver: '4f6d3b9b-027b-4f4c-9142-0e5a2a2247e0'
+  serviceBusDataSender: '69a216fc-b8fb-44d8-bc22-1f3c2cd27a39'
+  keyVaultSecretsOfficer: 'b86a8fe4-44ce-4948-aee5-eccb2c155cd7'
+  storageBlobDataContributor: 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
+  storageFileDataContributor: '0c867c2a-1d8c-454a-a3db-ab2ea1bdc8bb'
+  storageQueueDataContributor: '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
+  storageTableDataContributor: '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3'
+}
 
 // ----------
 // Parameters
@@ -383,3 +452,4 @@ var inboundConnections = [
 
 param services object
 param cluster object
+param applicationId string
