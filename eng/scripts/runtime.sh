@@ -11,11 +11,11 @@ environment()
     echo "=> Loading configuration variables..."
 
     # TODO: Handle multiple cluster configurations
+    # TODO: Handle multiple applications
+
     config_data=$(cat ../../eng/configs/platform.local.json)
     service_name=$(echo "$config_data" | jq -r '.services.name')
     cluster_name=$(echo "$config_data" | jq -r '.clusters[0].name')
-
-    # TODO: Handle multiple applications
     app_id=$(az ad app list --display-name 'Pipelines' -o json | jq -r '.[0].appId')
 }
 
@@ -44,13 +44,13 @@ build()
 
 #
 # Generate
-# Provides the ability to generate the Kubernetes manifest from the Configuration Metadata
 #
 
 generate()
 {
     echo "=> Generating deployment files..."
 
+    echo "==> Removing existing kubernetes manifest..."
     rm ./functions.local.yaml
 
     echo "==> Copying kubernetes manifest..."
@@ -111,7 +111,8 @@ deploy()
     if [[ -z "$(kubectl get deployment -n functions-system -o json | jq -r '.items[] | select(.metadata.name == "functions")')" ]]; then
         echo "==> Creating kubernetes deployment..."
         kubectl apply -f ./functions.yaml
-        # func kubernetes deploy --name "$runtime" --image-name "runtime/$runtime" --registry "$REGISTRY_NAME.azurecr.io/runtime" --min-replicas 1 --namespace "$namespace" --write-config
+        # NOTE: Following command is included as an archive for future reference
+        #func kubernetes deploy --name "$runtime" --image-name "runtime/$runtime" --registry "$REGISTRY_NAME.azurecr.io/runtime" --min-replicas 1 --namespace "$namespace"
     else
         echo "==> Skipping kubernetes deployment creation..."
     fi
@@ -128,6 +129,7 @@ delete()
     if [[ -n "$(kubectl get deployment -n functions-system -o json | jq -r '.items[] | select(.metadata.name == "functions")')" ]]; then
         echo "==> Deleting kubernetes deployment..."
         kubectl delete -f ./functions.yaml
+        # NOTE: Following command is included as an archive for future reference
         #func kubernetes delete --name "$runtime" --image-name "runtime/$runtime" --registry "$REGISTRY_NAME.azurecr.io/runtime" --namespace "$namespace"
     else
         echo "==> Skipping kubernetes deployment deletion..."

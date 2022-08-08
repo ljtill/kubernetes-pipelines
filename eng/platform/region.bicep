@@ -47,4 +47,10 @@ module clusters 'modules/clusters/resources.bicep' = [for cluster in config.clus
 // Variables
 // ---------
 
-var config = json(loadTextContent('../configs/platform.local.json'))
+var config = loadJsonContent('../configs/platform.local.json')
+
+// ----------
+// Parameters
+// ----------
+
+param appId string

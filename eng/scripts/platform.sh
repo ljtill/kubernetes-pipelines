@@ -10,6 +10,8 @@ environment()
 {
     echo "=> Setting runtime variables..."
 
+    # TODO: Application name needs to be unique
+
     tenant_id=$(az account show -o json | jq -r '.tenantId')
     config_path="../configs/platform.local.json"
     config_data=$(cat $config_path)
@@ -25,6 +27,8 @@ environment()
 deploy()
 {
     echo "=> Deploying platform..."
+
+    # TODO: Handle duplicate application names
 
     if [[ -z "$(az ad app list --display-name "$app_name" -o json | jq -r '.[]')" ]]; then
         echo "==> Creating azure ad application..."
@@ -42,7 +46,7 @@ deploy()
     fi
 
     echo "==> Deploying azure resources..."
-    az deployment sub create --name "$deployment_name" --location "$location" --template-file "./region.bicep"
+    az deployment sub create --name "$deployment_name" --location "$location" --template-file "./region.bicep" --parameters appId=$app_id
 }
 
 #
@@ -94,7 +98,7 @@ bootstrap()
 {
     echo -e "\n=> Bootstrapping platform..."
 
-    # Kubernetes Event Driven Autoscaler
+    # NOTE: Kubernetes Event Driven Autoscaler
 
     echo "==> Installing kubernetes autoscaler..."
 
@@ -122,7 +126,7 @@ bootstrap()
         echo "==> Skipping helm chart installation..."
     fi
 
-    # Azure Workload Identity
+    # NOTE: Azure Workload Identity
 
     echo "==> Installing azure workload identity..."
 
