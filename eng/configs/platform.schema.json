@@ -1,7 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft-07/schema",
-    "$id": "http://github.com/ljtill/pipelines/blob/main/eng/configs/platform.schema.json",
-    "title": "Root Schema",
+    "$id": "https://github.com/ljtill/pipelines/blob/main/eng/configs/platform.schema.json",
     "type": "object",
     "required": [
         "services",
@@ -9,7 +8,6 @@
     ],
     "properties": {
         "services": {
-            "title": "The services Schema",
             "type": "object",
             "required": [
                 "subscription",
@@ -20,41 +18,34 @@
             ],
             "properties": {
                 "subscription": {
-                    "title": "The subscription Schema",
                     "type": "string"
                 },
                 "resourceGroup": {
-                    "title": "The resourceGroup Schema",
                     "type": "string"
                 },
                 "name": {
-                    "title": "The name Schema",
                     "type": "string"
                 },
                 "location": {
-                    "title": "The location Schema",
                     "type": "string"
                 },
                 "properties": {
-                    "title": "The properties Schema",
                     "type": "object",
                     "required": [
                         "clientAddress"
                     ],
                     "properties": {
-                        "clientAddress": {
-                            "title": "The clientAddress Schema",
-                            "type": "string"
+                        "clientAddresses": {
+                            "type": "array",
+                            "items": {}
                         }
                     }
                 }
             }
         },
         "clusters": {
-            "title": "The clusters Schema",
             "type": "array",
             "items": {
-                "title": "A Schema",
                 "type": "object",
                 "required": [
                     "subscription",
@@ -65,30 +56,24 @@
                 ],
                 "properties": {
                     "subscription": {
-                        "title": "The subscription Schema",
                         "type": "string"
                     },
                     "resourceGroup": {
-                        "title": "The resourceGroup Schema",
                         "type": "string"
                     },
                     "name": {
-                        "title": "The name Schema",
                         "type": "string"
                     },
                     "location": {
-                        "title": "The location Schema",
                         "type": "string"
                     },
                     "properties": {
-                        "title": "The properties Schema",
                         "type": "object",
                         "required": [
                             "country"
                         ],
                         "properties": {
                             "country": {
-                                "title": "The country Schema",
                                 "type": "string"
                             }
                         }

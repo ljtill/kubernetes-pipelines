@@ -6,7 +6,7 @@
         "name": "",
         "location": "",
         "properties": {
-            "clientAddress": ""
+            "clientAddresses": []
         }
     },
     "clusters": [
