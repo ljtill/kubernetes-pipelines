@@ -46,7 +46,8 @@ deploy()
     fi
 
     echo "==> Deploying azure resources..."
-    az deployment sub create --name "$deployment_name" --location "$location" --template-file "./region.bicep" --parameters appId=$app_id
+    echo "$config_data" | jq -r '.services.subscription' | xargs -rtL1 az account set --subscription
+    az deployment sub create --name "$deployment_name" --location "$location" --template-file "./region.bicep" --parameters applicationId=$app_id
 }
 
 #
