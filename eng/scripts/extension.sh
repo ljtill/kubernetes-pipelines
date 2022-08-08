@@ -18,7 +18,10 @@ build()
 
 publish()
 {
+    # NOTE: Implement the publish function
+
     echo "=> Publishing extension..."
+    tfx extension publish
 }
 
 #
