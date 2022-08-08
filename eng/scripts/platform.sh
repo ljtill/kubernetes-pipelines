@@ -15,7 +15,7 @@ environment()
     tenant_id=$(az account show -o json | jq -r '.tenantId')
     config_path="../configs/platform.local.json"
     config_data=$(cat $config_path)
-    deployment_name="Microsoft.Bicep.Resources"
+    deployment_name="Microsoft.Resources"
     location="Norway East"
     app_name="Pipelines"
 }
