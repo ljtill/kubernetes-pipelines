@@ -10,7 +10,7 @@ targetScope = 'subscription'
 
 // Groups
 module groups 'modules/groups/resources.bicep' = {
-  name: 'Microsoft.Bicep.Resources.Groups'
+  name: 'Microsoft.Resources.Groups'
   params: {
     services: config.services
     clusters: config.clusters
@@ -19,7 +19,7 @@ module groups 'modules/groups/resources.bicep' = {
 
 // Services
 module services 'modules/services/resources.bicep' = {
-  name: 'Microsoft.Bicep.Resources.Services'
+  name: 'Microsoft.Resources.Services'
   scope: resourceGroup(config.services.subscription, config.services.resourceGroup)
   params: {
     services: config.services
@@ -32,7 +32,7 @@ module services 'modules/services/resources.bicep' = {
 // Clusters
 @batchSize(1)
 module clusters 'modules/clusters/resources.bicep' = [for cluster in config.clusters: {
-  name: 'Microsoft.Bicep.Resources.Clusters.${cluster.properties.country}'
+  name: 'Microsoft.Resources.Clusters.${cluster.properties.country}'
   scope: resourceGroup(cluster.subscription, cluster.resourceGroup)
   params: {
     services: config.services

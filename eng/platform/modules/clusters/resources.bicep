@@ -253,7 +253,7 @@ resource storageAccountTableContributorRoleAssignment 'Microsoft.Authorization/r
 
 // Virtual Network Links
 resource links 'Microsoft.Resources/deployments@2021-04-01' = {
-  name: 'Microsoft.Bicep.Resources.Network'
+  name: 'Microsoft.Resources.Network'
   subscriptionId: services.subscription
   resourceGroup: services.resourceGroup
   properties: {
@@ -342,7 +342,7 @@ resource links 'Microsoft.Resources/deployments@2021-04-01' = {
 // Role Assignments
 // NOTE: Workaround for cross resource group role assignments
 resource authorization 'Microsoft.Resources/deployments@2021-04-01' = {
-  name: 'Microsoft.Bicep.Authorization.Services'
+  name: 'Microsoft.Authorization.Services'
   subscriptionId: services.subscription
   resourceGroup: services.resourceGroup
   properties: {
@@ -382,7 +382,7 @@ resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-12-01-pr
 // -------
 
 module diagnostics './resources.diagnostics.bicep' = {
-  name: 'Microsoft.Bicep.Resources.Diagnostics.${cluster.properties.country}'
+  name: 'Microsoft.Resources.Diagnostics.${cluster.properties.country}'
   params: {
     services: services
     cluster: cluster
@@ -398,7 +398,7 @@ module diagnostics './resources.diagnostics.bicep' = {
 }
 
 module endpoints './resources.endpoints.bicep' = {
-  name: 'Microsoft.Bicep.Resources.Endpoints.${cluster.properties.country}'
+  name: 'Microsoft.Resources.Endpoints.${cluster.properties.country}'
   params: {
     services: services
     cluster: cluster

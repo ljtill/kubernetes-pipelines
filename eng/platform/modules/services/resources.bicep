@@ -85,7 +85,7 @@ resource storageAccountTable 'Microsoft.Network/privateDnsZones@2020-06-01' = {
 // -------
 
 module diagnostics './resources.diagnostics.bicep' = {
-  name: 'Microsoft.Bicep.Resources.Diagnostics'
+  name: 'Microsoft.Resources.Diagnostics'
   params: {
     services: services
   }
