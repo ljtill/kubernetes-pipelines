@@ -74,7 +74,6 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
   location: cluster.location
   properties: {
     tenantId: tenant().tenantId
-    createMode: 'default'
     sku: {
       name: 'standard'
       family: 'A'
@@ -85,6 +84,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
       ipRules: []
       bypass: 'AzureServices'
     }
+    enableSoftDelete: false
   }
 }
 
