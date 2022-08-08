@@ -43,6 +43,7 @@ deploy()
         az ad sp create --id "$app_id" -o none
     else
         echo "==> Skipping azure ad service principal creation..."
+        app_id=$(az ad app list --display-name "$app_name" -o json | jq -r '.[].appId')
     fi
 
     echo "==> Deploying azure resources..."
