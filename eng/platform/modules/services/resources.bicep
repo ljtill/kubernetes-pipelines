@@ -18,7 +18,10 @@ resource registry 'Microsoft.ContainerRegistry/registries@2021-12-01-preview' = 
   properties: {
     networkRuleSet: {
       defaultAction: 'Deny'
-      ipRules: ipRules
+      ipRules: [for ipRule in services.properties.clientAddresses: {
+        action: 'Allow'
+        value: ipRule
+      }]
     }
   }
 }
@@ -98,10 +101,6 @@ module diagnostics './resources.diagnostics.bicep' = {
 
 var name = services.name
 var location = services.location
-var ipRules = [for i in services.properties.clientAddress: {
-  action: 'Allow'
-  value: i
-}]
 
 // ----------
 // Parameters
