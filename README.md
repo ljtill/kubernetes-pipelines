@@ -23,11 +23,11 @@ _Please note this repository is under development and subject to change._
 | Folder                  | Description                  |
 | ----------------------- | ---------------------------- |
 | eng/                    | Project Support Artifacts    |
+| eng/client              | Message Queue Tooling        |
 | eng/configs             | Configuration Files          |
 | eng/platform            | Infra-as-Code Components     |
 | eng/scripts             | Project Shell Scripts        |
 | src/                    | Runtime Source Code          |
-| src/Pipelines.Client    | Message Queue Tooling        |
 | src/Pipelines.Extension | Azure DevOps Extension Files |
 | src/Pipelines.Images    | Pipeline Container Images    |
 | src/Pipelines.Runtime   | Azure Functions Source       |
