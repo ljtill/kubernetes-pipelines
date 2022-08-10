@@ -31,18 +31,18 @@ deploy()
     # TODO: Handle duplicate application names
 
     if [[ -z "$(az ad app list --display-name "$app_name" -o json | jq -r '.[]')" ]]; then
-        echo "==> Creating azure ad application..."
+        echo "==> Creating application..."
         az ad app create --display-name "$app_name" -o none
     else
-        echo "==> Skipping azure ad application creation..."
+        echo "==> Skipping application creation..."
     fi
 
     if [[ -z "$(az ad sp list --display-name "$app_name" -o json | jq -r '.[]')" ]]; then
-        echo "==> Creating azure ad service principal..."
+        echo "==> Creating service principal..."
         app_id=$(az ad app list --display-name "$app_name" -o json | jq -r '.[].appId')
         az ad sp create --id "$app_id" -o none
     else
-        echo "==> Skipping azure ad service principal creation..."
+        echo "==> Skipping service principal creation..."
         app_id=$(az ad app list --display-name "$app_name" -o json | jq -r '.[].appId')
     fi
 
@@ -71,11 +71,11 @@ delete()
     echo "$config_data" | jq -r ".services.resourceGroup" | xargs -rtL1 az group delete --yes --name
 
     if [[ -n "$(az ad app list --display-name "$app_name" -o json | jq -r '.[]')" ]]; then
-        echo "==> Deleting azure ad application..."
+        echo "==> Deleting application..."
         app_id=$(az ad app list --display-name "$app_name" -o json | jq -r '.[].appId')
         az ad app delete --id "$app_id" -o none
     else
-        echo "==> Skipping azure ad application deletion..."
+        echo "==> Skipping application deletion..."
     fi
 }
 
