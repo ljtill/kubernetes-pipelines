@@ -234,53 +234,58 @@ resource storageAccountTablePrivateDnsZoneGroup 'Microsoft.Network/privateEndpoi
 // Resources
 // ---------
 
+// Virtual Network
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-08-01' existing = {
   name: cluster.name
   scope: resourceGroup(cluster.subscription, cluster.resourceGroup)
 }
 
+// Service Bus
 resource serviceBus 'Microsoft.ServiceBus/namespaces@2021-11-01' existing = {
   name: cluster.name
   scope: resourceGroup(cluster.subscription, cluster.resourceGroup)
 }
 resource serviceBusPrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: 'privatelink.servicebus.windows.net'
-  scope: resourceGroup(services.subscription, services.resourceGroup)
+  scope: resourceGroup(services.subscription, services.properties.zones.resourceGroup)
 }
 
+// Container Registry
 resource containerRegistry 'Microsoft.ContainerRegistry/registries@2021-12-01-preview' existing = {
   name: services.name
   scope: resourceGroup(services.subscription, services.resourceGroup)
 }
 resource containerRegistryPrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: 'privatelink.azurecr.io'
-  scope: resourceGroup(services.subscription, services.resourceGroup)
+  scope: resourceGroup(services.subscription, services.properties.zones.resourceGroup)
 }
 
+// Key Vault
 resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' existing = {
   name: cluster.name
   scope: resourceGroup(cluster.subscription, cluster.resourceGroup)
 }
 resource keyVaultPrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: 'privatelink.vaultcore.azure.net'
-  scope: resourceGroup(services.subscription, services.resourceGroup)
+  scope: resourceGroup(services.subscription, services.properties.zones.resourceGroup)
 }
 
+// Storage Account
 resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' existing = {
   name: cluster.name
   scope: resourceGroup(cluster.subscription, cluster.resourceGroup)
 }
 resource storageAccountBlobPrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: 'privatelink.blob.core.windows.net'
-  scope: resourceGroup(services.subscription, services.resourceGroup)
+  scope: resourceGroup(services.subscription, services.properties.zones.resourceGroup)
 }
 resource storageAccountQueuePrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: 'privatelink.queue.core.windows.net'
-  scope: resourceGroup(services.subscription, services.resourceGroup)
+  scope: resourceGroup(services.subscription, services.properties.zones.resourceGroup)
 }
 resource storageAccountTablePrivateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
   name: 'privatelink.table.core.windows.net'
-  scope: resourceGroup(services.subscription, services.resourceGroup)
+  scope: resourceGroup(services.subscription, services.properties.zones.resourceGroup)
 }
 
 // ----------

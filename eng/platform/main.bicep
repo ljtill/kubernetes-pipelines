@@ -32,7 +32,7 @@ module services 'modules/services/resources.bicep' = {
 // Clusters
 @batchSize(1)
 module clusters 'modules/clusters/resources.bicep' = [for cluster in config.clusters: {
-  name: 'Microsoft.Resources.Clusters.${cluster.properties.country}'
+  name: 'Microsoft.Resources.Clusters.${defaults.locations[cluster.location]}'
   scope: resourceGroup(cluster.subscription, cluster.resourceGroup)
   params: {
     services: config.services
@@ -48,6 +48,7 @@ module clusters 'modules/clusters/resources.bicep' = [for cluster in config.clus
 // Variables
 // ---------
 
+var defaults = loadJsonContent('./defaults.json')
 var config = loadJsonContent('../configs/platform.local.json')
 
 // ----------
