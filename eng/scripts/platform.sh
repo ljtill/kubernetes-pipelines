@@ -48,7 +48,7 @@ deploy()
 
     echo "==> Deploying azure resources..."
     echo "$config_data" | jq -r '.services.subscription' | xargs -rtL1 az account set --subscription
-    az deployment sub create --name "$deployment_name" --location "$location" --template-file "./region.bicep" --parameters applicationId=$app_id
+    az deployment sub create --name "$deployment_name" --location "$location" --template-file "./main.bicep" --parameters applicationId=$app_id
 }
 
 #
@@ -70,9 +70,6 @@ delete()
     echo "$config_data" | jq -r '.services.subscription' | xargs -rtL1 az account set --subscription
     echo "$config_data" | jq -r ".services.resourceGroup" | xargs -rtL1 az group delete --yes --name
 
-    echo "==> Purging key vaults..."
-    az keyvault list-deleted -o json | jq -r '.[].name' | xargs -rtL1 az keyvault purge --name
-
     if [[ -n "$(az ad app list --display-name "$app_name" -o json | jq -r '.[]')" ]]; then
         echo "==> Deleting azure ad application..."
         app_id=$(az ad app list --display-name "$app_name" -o json | jq -r '.[].appId')
@@ -89,7 +86,7 @@ delete()
 validate()
 {
     echo "=> Validating platform..."
-    az deployment sub what-if --name "$deployment_name" --location "$location" --template-file "./region.bicep"
+    az deployment sub what-if --name "$deployment_name" --location "$location" --template-file "./main.bicep"
 }
 
 #
