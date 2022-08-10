@@ -99,10 +99,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   properties: {
     networkAcls: {
       defaultAction: 'Deny'
-      ipRules: [for inboundConnection in defaults.inboundConnections: {
-        action: 'Allow'
-        value: inboundConnection
-      }]
+      ipRules: []
       bypass: 'AzureServices'
     }
   }
