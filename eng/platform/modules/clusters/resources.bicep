@@ -96,6 +96,16 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
     name: 'Standard_LRS'
   }
   kind: 'StorageV2'
+  properties: {
+    networkAcls: {
+      defaultAction: 'Deny'
+      ipRules: [for inboundConnection in inboundConnections: {
+        action: 'Allow'
+        value: inboundConnection
+      }]
+      bypass: 'AzureServices'
+    }
+  }
 }
 
 // Kubernetes
