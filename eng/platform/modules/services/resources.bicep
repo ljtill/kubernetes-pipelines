@@ -20,7 +20,7 @@ resource registry 'Microsoft.ContainerRegistry/registries@2021-12-01-preview' = 
       defaultAction: 'Deny'
       ipRules: [for ipRule in services.properties.clientAddresses: {
         action: 'Allow'
-        value: ipRule
+        value: replace(ipRule, '/32', '')
       }]
     }
   }
