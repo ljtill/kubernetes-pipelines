@@ -6,6 +6,9 @@
         "name": "",
         "location": "",
         "properties": {
+            "zones": {
+                "resourceGroup": ""
+            },
             "clientAddresses": []
         }
     },
@@ -16,7 +19,12 @@
             "name": "",
             "location": "",
             "properties": {
-                "country": ""
+                "nodes": {
+                    "resourceGroup": ""
+                },
+                "endpoints": {
+                    "resourceGroup": ""
+                }
             }
         }
     ]
