@@ -1,6 +1,6 @@
 {
-    "$schema": "https://json-schema.org/draft-07/schema",
-    "$id": "https://github.com/ljtill/pipelines/blob/main/eng/configs/platform.schema.json",
+    "$schema": "https://json-schema.org/draft/2019-09/schema",
+    "$id": "https://raw.githubusercontent.com/ljtill/pipelines/main/eng/configs/platform.schema.json",
     "type": "object",
     "required": [
         "services",
@@ -32,9 +32,21 @@
                 "properties": {
                     "type": "object",
                     "required": [
-                        "clientAddress"
+                        "zones",
+                        "clientAddresses"
                     ],
                     "properties": {
+                        "zones": {
+                            "type": "object",
+                            "required": [
+                                "resourceGroup"
+                            ],
+                            "properties": {
+                                "resourceGroup": {
+                                    "type": "string"
+                                }
+                            }
+                        },
                         "clientAddresses": {
                             "type": "array",
                             "items": {}
@@ -70,11 +82,31 @@
                     "properties": {
                         "type": "object",
                         "required": [
-                            "country"
+                            "nodes",
+                            "endpoints"
                         ],
                         "properties": {
-                            "country": {
-                                "type": "string"
+                            "nodes": {
+                                "type": "object",
+                                "required": [
+                                    "resourceGroup"
+                                ],
+                                "properties": {
+                                    "resourceGroup": {
+                                        "type": "string"
+                                    }
+                                }
+                            },
+                            "endpoints": {
+                                "type": "object",
+                                "required": [
+                                    "resourceGroup"
+                                ],
+                                "properties": {
+                                    "resourceGroup": {
+                                        "type": "string"
+                                    }
+                                }
                             }
                         }
                     }
