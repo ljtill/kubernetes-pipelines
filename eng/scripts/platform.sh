@@ -39,16 +39,18 @@ deploy()
 
     if [[ -z "$(az ad sp list --display-name "$app_name" -o json | jq -r '.[]')" ]]; then
         echo "==> Creating service principal..."
-        app_id=$(az ad app list --display-name "$app_name" -o json | jq -r '.[].appId')
+        # app_id=$(az ad app list --display-name "$app_name" -o json | jq -r '.[].appId')
+        object_id=$(az ad sp list --display-name "$app_name" -o json | jq -r '.[].id')
         az ad sp create --id "$app_id" -o none
     else
         echo "==> Skipping service principal creation..."
-        app_id=$(az ad app list --display-name "$app_name" -o json | jq -r '.[].appId')
+        object_id=$(az ad sp list --display-name "$app_name" -o json | jq -r '.[].id')
+        # app_id=$(az ad app list --display-name "$app_name" -o json | jq -r '.[].appId')
     fi
 
     echo "==> Deploying azure resources..."
     echo "$config_data" | jq -r '.services.subscription' | xargs -rtL1 az account set --subscription
-    az deployment sub create --name "$deployment_name" --location "$location" --template-file "./main.bicep" --parameters applicationId=$app_id
+    az deployment sub create --name "$deployment_name" --location "$location" --template-file "./main.bicep" --parameters objectIdId=$object_id
 }
 
 #
