@@ -48,7 +48,7 @@ deploy()
 
     echo "==> Deploying azure resources..."
     echo "$config_data" | jq -r '.services.subscription' | xargs -rtL1 az account set --subscription
-    az deployment sub create --name "$deployment_name" --location "$location" --template-file "./main.bicep" --parameters objectIdId=$object_id
+    az deployment sub create --name "$deployment_name" --location "$location" --template-file "./main.bicep" --parameters objectId=$object_id
 }
 
 #
