@@ -201,19 +201,19 @@ resource securityGroup 'Microsoft.Network/networkSecurityGroups@2021-08-01' = {
 
 // Service Bus
 resource serviceBusReceiverRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('ServiceBusDataReceiver', cluster.name, applicationId)
+  name: guid('ServiceBusDataReceiver', cluster.name, objectId)
   scope: serviceBus
   properties: {
-    principalId: applicationId
+    principalId: objectId
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', defaults.roleDefinitions.serviceBusDataReceiver)
   }
 }
 resource serviceBusSenderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('ServiceBusDataSender', cluster.name, applicationId)
+  name: guid('ServiceBusDataSender', cluster.name, objectId)
   scope: serviceBus
   properties: {
-    principalId: applicationId
+    principalId: objectId
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', defaults.roleDefinitions.serviceBusDataSender)
   }
@@ -221,10 +221,10 @@ resource serviceBusSenderRoleAssignment 'Microsoft.Authorization/roleAssignments
 
 // Key Vault
 resource keyVaultSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('KeyVaultSecretsOfficer', cluster.name, applicationId)
+  name: guid('KeyVaultSecretsOfficer', cluster.name, objectId)
   scope: keyVault
   properties: {
-    principalId: applicationId
+    principalId: objectId
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', defaults.roleDefinitions.keyVaultSecretsOfficer)
   }
@@ -232,37 +232,37 @@ resource keyVaultSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssig
 
 // Storage Account
 resource storageAccountBlobContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('StorageBlobDataContributor', cluster.name, applicationId)
+  name: guid('StorageBlobDataContributor', cluster.name, objectId)
   scope: storageAccount
   properties: {
-    principalId: applicationId
+    principalId: objectId
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', defaults.roleDefinitions.storageBlobDataContributor)
   }
 }
 resource storageAccountFileContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('StorageFileDataContributor', cluster.name, applicationId)
+  name: guid('StorageFileDataContributor', cluster.name, objectId)
   scope: storageAccount
   properties: {
-    principalId: applicationId
+    principalId: objectId
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', defaults.roleDefinitions.storageFileDataContributor)
   }
 }
 resource storageAccountQueueContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('StorageQueueDataContributor', cluster.name, applicationId)
+  name: guid('StorageQueueDataContributor', cluster.name, objectId)
   scope: storageAccount
   properties: {
-    principalId: applicationId
+    principalId: objectId
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', defaults.roleDefinitions.storageQueueDataContributor)
   }
 }
 resource storageAccountTableContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('StorageTableDataContributor', cluster.name, applicationId)
+  name: guid('StorageTableDataContributor', cluster.name, objectId)
   scope: storageAccount
   properties: {
-    principalId: applicationId
+    principalId: objectId
     principalType: 'ServicePrincipal'
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', defaults.roleDefinitions.storageTableDataContributor)
   }
@@ -448,4 +448,4 @@ var defaults = loadJsonContent('../../defaults.json')
 
 param services object
 param cluster object
-param applicationId string
+param objectId string
