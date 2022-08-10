@@ -37,7 +37,7 @@ module clusters 'modules/clusters/resources.bicep' = [for cluster in config.clus
   params: {
     services: config.services
     cluster: cluster
-    applicationId: applicationId
+    objectId: objectId
   }
   dependsOn: [
     services
@@ -55,4 +55,4 @@ var config = loadJsonContent('../configs/platform.local.json')
 // Parameters
 // ----------
 
-param applicationId string
+param objectId string
