@@ -201,7 +201,7 @@ resource securityGroup 'Microsoft.Network/networkSecurityGroups@2021-08-01' = {
 
 // Service Bus
 resource serviceBusReceiverRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('ServiceBusDataReceiver', applicationId)
+  name: guid('ServiceBusDataReceiver', cluster.name, applicationId)
   scope: serviceBus
   properties: {
     principalId: applicationId
@@ -210,7 +210,7 @@ resource serviceBusReceiverRoleAssignment 'Microsoft.Authorization/roleAssignmen
   }
 }
 resource serviceBusSenderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('ServiceBusDataSender', applicationId)
+  name: guid('ServiceBusDataSender', cluster.name, applicationId)
   scope: serviceBus
   properties: {
     principalId: applicationId
@@ -221,7 +221,7 @@ resource serviceBusSenderRoleAssignment 'Microsoft.Authorization/roleAssignments
 
 // Key Vault
 resource keyVaultSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('KeyVaultSecretsOfficer', applicationId)
+  name: guid('KeyVaultSecretsOfficer', cluster.name, applicationId)
   scope: keyVault
   properties: {
     principalId: applicationId
@@ -232,8 +232,8 @@ resource keyVaultSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssig
 
 // Storage Account
 resource storageAccountBlobContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('StorageBlobDataContributor', applicationId)
-  scope: keyVault
+  name: guid('StorageBlobDataContributor', cluster.name, applicationId)
+  scope: storageAccount
   properties: {
     principalId: applicationId
     principalType: 'ServicePrincipal'
@@ -241,8 +241,8 @@ resource storageAccountBlobContributorRoleAssignment 'Microsoft.Authorization/ro
   }
 }
 resource storageAccountFileContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('StorageFileDataContributor', applicationId)
-  scope: keyVault
+  name: guid('StorageFileDataContributor', cluster.name, applicationId)
+  scope: storageAccount
   properties: {
     principalId: applicationId
     principalType: 'ServicePrincipal'
@@ -250,8 +250,8 @@ resource storageAccountFileContributorRoleAssignment 'Microsoft.Authorization/ro
   }
 }
 resource storageAccountQueueContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('StorageQueueDataContributor', applicationId)
-  scope: keyVault
+  name: guid('StorageQueueDataContributor', cluster.name, applicationId)
+  scope: storageAccount
   properties: {
     principalId: applicationId
     principalType: 'ServicePrincipal'
@@ -259,8 +259,8 @@ resource storageAccountQueueContributorRoleAssignment 'Microsoft.Authorization/r
   }
 }
 resource storageAccountTableContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('StorageTableDataContributor', applicationId)
-  scope: keyVault
+  name: guid('StorageTableDataContributor', cluster.name, applicationId)
+  scope: storageAccount
   properties: {
     principalId: applicationId
     principalType: 'ServicePrincipal'
