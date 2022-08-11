@@ -39,8 +39,8 @@ deploy()
 
     if [[ -z "$(az ad sp list --display-name "$app_name" -o json | jq -r '.[]')" ]]; then
         echo "==> Creating service principal..."
-        object_id=$(az ad sp list --display-name "$app_name" -o json | jq -r '.[].id')
         az ad sp create --id "$app_id" -o none
+        object_id=$(az ad sp list --display-name "$app_name" -o json | jq -r '.[].id')
     else
         echo "==> Skipping service principal creation..."
         object_id=$(az ad sp list --display-name "$app_name" -o json | jq -r '.[].id')
