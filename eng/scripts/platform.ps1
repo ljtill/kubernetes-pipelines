@@ -56,7 +56,7 @@ function Bootstrap($environmentVariables)
     }    
 
     Write-Output "==> Updating helm chart information..."
-    helm repo update 
+    helm repo update
 
     $checkKubeNS=$(kubectl get namespace -o json | ConvertFrom-Json).items | Where-Object {$_.metadata.name -eq "keda-system"}
 
@@ -188,8 +188,9 @@ function Deploy($environmentVariables)
    # Deploy Bicep Resources
    Write-Output "==> Deploying azure resources..."
    $subscriptionId = ($configData | ConvertFrom-Json).services.subscription
+   $objectId = $(az ad app list --display-name "$appName" -o json | ConvertFrom-Json).id
    az account set --subscription $subscriptionId
-   az deployment sub create --name $deploymentName --location $location --template-file "../platform/region.bicep" --parameters applicationId=$appId
+   az deployment sub create --name $deploymentName --location $location --template-file "../platform/region.bicep" --parameters objectId=$objectId
 
 }
 
