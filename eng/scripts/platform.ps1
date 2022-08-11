@@ -190,7 +190,7 @@ function Deploy($environmentVariables)
    $subscriptionId = ($configData | ConvertFrom-Json).services.subscription
    $objectId = $(az ad app list --display-name "$appName" -o json | ConvertFrom-Json).id
    az account set --subscription $subscriptionId
-   az deployment sub create --name $deploymentName --location $location --template-file "../platform/region.bicep" --parameters objectId=$objectId
+   az deployment sub create --name $deploymentName --location $location --template-file "../platform/main.bicep" --parameters objectId=$objectId
 
 }
 
