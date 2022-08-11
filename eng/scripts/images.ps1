@@ -46,7 +46,7 @@ Function Build()
     # Linux
     #
 
-    if($OS -eq "linux")
+    Function BuildLinux
     {
         Write-Output "==> Building linux..."
     }
@@ -55,9 +55,18 @@ Function Build()
     # Windows
     #
 
-    if($OS -eq "windows")
+    Function BuildWindows
     {
         Write-Output "==> Building windows..."
+    }
+
+    #
+    # Invocation
+    #
+
+    switch($OS){
+        "windows" { BuildWindows }
+        "linux"   { BuildLinux }
     }
 }
 
@@ -87,3 +96,5 @@ switch ($Action) {
     "Push" { Write-Output "Environment Variables Set"; Environment; Push}
      Default { Write-Output "Missing argument"}
 }
+
+
