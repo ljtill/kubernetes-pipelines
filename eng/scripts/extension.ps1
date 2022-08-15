@@ -1,19 +1,13 @@
-## ------------------------------------------------------------------------
-## Input Parameters
-## 
-## ------------------------------------------------------------------------
-
 param(
-  [Parameter()]
-  [String]$ExtensionAction
+    [Parameter()]
+    [String]$ExtensionAction
 )
 
 #
 # Build
 #
 
-function Build
-{
+function Build {
     Write-Output "=> Building extension..."
     Set-Location ../../src/Pipelines.Extension
     tfx extension create --manifest-globs vss-extension.json --output-path ./bin/
@@ -23,8 +17,7 @@ function Build
 # Publish
 #
 
-Function publish
-{
+function publish {
     # NOTE: Implement the publish function
 
     Write-Output "=> Publishing extension..."
@@ -38,5 +31,5 @@ Function publish
 switch ($ExtensionAction) {
     "Build" { Build }
     "Publish" { Publish }
-     Default { Write-Output "Missing argument"}
+    Default { Write-Output "Missing argument" }
 }
