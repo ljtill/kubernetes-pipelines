@@ -172,6 +172,8 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   }
 }
 
+// TODO: NAT Gateway
+
 // Virtual Network
 resource virtualNetwork 'Microsoft.Network/virtualNetworks@2021-08-01' = {
   name: cluster.name
@@ -204,83 +206,10 @@ resource securityGroup 'Microsoft.Network/networkSecurityGroups@2021-03-01' = {
 }
 
 // -----------
-// Assignments
-// -----------
-
-// Service Bus
-resource serviceBusReceiverRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('ServiceBusDataReceiver', cluster.name, objectId)
-  scope: serviceBus
-  properties: {
-    principalId: objectId
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', defaults.roleDefinitions.serviceBusDataReceiver)
-  }
-}
-resource serviceBusSenderRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('ServiceBusDataSender', cluster.name, objectId)
-  scope: serviceBus
-  properties: {
-    principalId: objectId
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', defaults.roleDefinitions.serviceBusDataSender)
-  }
-}
-
-// Key Vault
-resource keyVaultSecretsOfficerRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('KeyVaultSecretsOfficer', cluster.name, objectId)
-  scope: keyVault
-  properties: {
-    principalId: objectId
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', defaults.roleDefinitions.keyVaultSecretsOfficer)
-  }
-}
-
-// Storage Account
-resource storageAccountBlobContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('StorageBlobDataContributor', cluster.name, objectId)
-  scope: storageAccount
-  properties: {
-    principalId: objectId
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', defaults.roleDefinitions.storageBlobDataContributor)
-  }
-}
-resource storageAccountFileContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('StorageFileDataContributor', cluster.name, objectId)
-  scope: storageAccount
-  properties: {
-    principalId: objectId
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', defaults.roleDefinitions.storageFileDataContributor)
-  }
-}
-resource storageAccountQueueContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('StorageQueueDataContributor', cluster.name, objectId)
-  scope: storageAccount
-  properties: {
-    principalId: objectId
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', defaults.roleDefinitions.storageQueueDataContributor)
-  }
-}
-resource storageAccountTableContributorRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid('StorageTableDataContributor', cluster.name, objectId)
-  scope: storageAccount
-  properties: {
-    principalId: objectId
-    principalType: 'ServicePrincipal'
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', defaults.roleDefinitions.storageTableDataContributor)
-  }
-}
-
-// -----------
 // Deployments
 // -----------
 
-// NOTE: Workarounds to allow cross resource group deployments
+// NOTE: Workaround for cross resource deployments
 
 // Virtual Network Links
 resource links 'Microsoft.Resources/deployments@2021-04-01' = {
@@ -419,4 +348,3 @@ var defaults = loadJsonContent('../../../defaults.json')
 
 param services object
 param cluster object
-param objectId string
