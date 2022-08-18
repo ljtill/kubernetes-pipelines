@@ -7,7 +7,7 @@ validate:
 	@$(EXEC_PATH) validate
 
 bootstrap:
-	@$(EXEC_PATH) bootstrap all
+	@$(EXEC_PATH) bootstrap
 
 delete:
 	@$(EXEC_PATH) delete
