@@ -82,10 +82,14 @@
                     "properties": {
                         "type": "object",
                         "required": [
+                            "clusterType",
                             "nodes",
                             "endpoints"
                         ],
                         "properties": {
+                            "clusterType": {
+                                "type": "string"
+                            },
                             "nodes": {
                                 "type": "object",
                                 "required": [

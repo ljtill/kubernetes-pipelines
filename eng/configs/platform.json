@@ -1,5 +1,4 @@
 {
-    "$schema": "https://raw.githubusercontent.com/ljtill/pipelines/main/eng/configs/platform.schema.json",
     "services": {
         "subscription": "",
         "resourceGroup": "",
@@ -19,6 +18,7 @@
             "name": "",
             "location": "",
             "properties": {
+                "clusterType": "public",
                 "nodes": {
                     "resourceGroup": ""
                 },
