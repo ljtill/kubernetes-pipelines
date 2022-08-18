@@ -23,10 +23,21 @@ module publicComponents './public/resources.components.bicep' = [for cluster in 
   params: {
     services: services
     cluster: cluster
+  }
+  dependsOn: [
+    groups
+  ]
+}]
+module publicAssignments './public/resources.assignments.bicep' = [for cluster in clusters: if (cluster.properties.clusterType == 'public') {
+  name: 'Microsoft.Resources.Clusters.Public.Assignments.${defaults.locations[cluster.location]}'
+  scope: resourceGroup(cluster.subscription, cluster.resourceGroup)
+  params: {
+    cluster: cluster
     objectId: objectId
   }
   dependsOn: [
     groups
+    publicComponents
   ]
 }]
 module publicDiagnostics './public/resources.diagnostics.bicep' = [for cluster in clusters: if (cluster.properties.clusterType == 'public') {
@@ -49,6 +60,17 @@ module privateComponents './private/resources.components.bicep' = [for cluster i
   scope: resourceGroup(cluster.subscription, cluster.resourceGroup)
   params: {
     services: services
+    cluster: cluster
+  }
+  dependsOn: [
+    groups
+  ]
+}]
+@batchSize(1)
+module privateAssignments './private/resources.assignments.bicep' = [for cluster in clusters: if (cluster.properties.clusterType == 'private') {
+  name: 'Microsoft.Resources.Clusters.Private.Assignments.${defaults.locations[cluster.location]}'
+  scope: resourceGroup(cluster.subscription, cluster.resourceGroup)
+  params: {
     cluster: cluster
     objectId: objectId
   }
