@@ -8,47 +8,34 @@ targetScope = 'subscription'
 // Modules
 // -------
 
-// Groups
-module groups 'modules/groups/resources.bicep' = {
-  name: 'Microsoft.Resources.Groups'
+// Services
+module services 'modules/services/resources.bicep' = {
+  name: 'Microsoft.Resources.Services'
+  scope: subscription(config.services.subscription)
   params: {
     services: config.services
     clusters: config.clusters
   }
 }
 
-// Services
-module services 'modules/services/resources.bicep' = {
-  name: 'Microsoft.Resources.Services'
-  scope: resourceGroup(config.services.subscription, config.services.resourceGroup)
-  params: {
-    services: config.services
-  }
-  dependsOn: [
-    groups
-  ]
-}
-
 // Clusters
-@batchSize(1)
-module clusters 'modules/clusters/resources.bicep' = [for cluster in config.clusters: {
-  name: 'Microsoft.Resources.Clusters.${defaults.locations[cluster.location]}'
-  scope: resourceGroup(cluster.subscription, cluster.resourceGroup)
+module clusters 'modules/clusters/resources.bicep' = {
+  name: 'Microsoft.Resources.Clusters'
+  scope: subscription(config.clusters[0].subscription)
   params: {
     services: config.services
-    cluster: cluster
+    clusters: config.clusters
     objectId: objectId
   }
   dependsOn: [
     services
   ]
-}]
+}
 
 // ---------
 // Variables
 // ---------
 
-var defaults = loadJsonContent('./defaults.json')
 var config = loadJsonContent('../configs/platform.local.json')
 
 // ----------

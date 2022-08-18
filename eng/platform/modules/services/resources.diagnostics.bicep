@@ -51,6 +51,8 @@ resource workspaceDiagnostics 'Microsoft.Insights/diagnosticSettings@2021-05-01-
   }
 }
 
+// TODO: Diagnostics Settings for Private DNS Zones
+
 // ---------
 // Resources
 // ---------
