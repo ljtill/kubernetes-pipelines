@@ -13,7 +13,7 @@ resource ipAddress 'Microsoft.Network/publicIPAddresses@2022-01-01' = {
   name: cluster.name
   location: cluster.location
   properties: {
-    publicIPAllocationMethod: 'Dynamic'
+    publicIPAllocationMethod: 'Static'
   }
   sku: {
     name: 'Standard'
