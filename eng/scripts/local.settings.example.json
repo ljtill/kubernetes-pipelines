@@ -1,9 +1,9 @@
 {
     "IsEncrypted": false,
     "Values": {
-        "AzureWebJobsStorage_accountName": "<StorageAccountName>",
+        "AzureWebJobsStorage": "UseDevelopmentStorage=true",
         "FUNCTIONS_WORKER_RUNTIME": "dotnet",
-        "ServiceBusConnection__fullyQualifiedNamespace": "<ServiceBusConnectionString>",
+        "ServiceBusConnection": "",
         "KUBE_CONFIG_PATH": "<KubeConfigPath>"
     }
 }
