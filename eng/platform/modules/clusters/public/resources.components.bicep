@@ -77,6 +77,7 @@ resource managedCluster 'Microsoft.ContainerService/managedClusters@2022-05-02-p
     }
     apiServerAccessProfile: {
       enablePrivateCluster: false
+      authorizedIPRanges: services.properties.clientAddresses
     }
     autoUpgradeProfile: {
       upgradeChannel: 'rapid'
@@ -164,7 +165,9 @@ resource keyVault 'Microsoft.KeyVault/vaults@2021-11-01-preview' = {
     }
     networkAcls: {
       defaultAction: 'Deny'
-      ipRules: []
+      ipRules: [for clientIP in services.properties.clientAddresses: {
+        value: clientIP
+      }]
       bypass: 'AzureServices'
     }
     enableRbacAuthorization: true
@@ -183,7 +186,10 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2021-09-01' = {
   properties: {
     networkAcls: {
       defaultAction: 'Deny'
-      ipRules: []
+      ipRules: [for clientIP in services.properties.clientAddresses: {
+        action: 'Allow'
+        value: clientIP
+      }]
       bypass: 'AzureServices'
     }
   }
